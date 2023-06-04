@@ -1,6 +1,7 @@
 #' Fit generalized linear model model with spline bases
 #'
 #' @export
+#' @import splines
 #' @param model Object of type FrameModel.
 #' @param x Data frame corresponding to isotopic measurements.
 #' @param t Vector corresponding to time steps.
@@ -11,13 +12,14 @@
 fit_glm <- function(model, x, t, sd = data.frame(), M = 8, M.r = 4, iter = 2000) {
   if(nrow(sd) == 0) sd <- matrix(0, nrow = nrow(x), ncol = ncol(x))
   else if(nrow(sd) != nrow(x) && ncol(sd) != ncol(x)) stop("Matrix of data and sd must have the same size, found ", dim(data), " and ", dim(sd))
+  if(nrow(x) != length(t)) stop("Data and time points have different lengths.")
 
   basis <- splines::ns(t, df = M, intercept = TRUE)
   basis_r <- splines::ns(t, df = M.r, intercept = TRUE)
   basis <- basis / mean(diag(basis %*% t(basis)))
   basis_r <- basis_r / mean(diag(basis_r %*% t(basis_r)))
 
-  sampling(stanmodels$spline, data = list(
+  fit <- sampling(stanmodels$spline, data = list(
     d = ncol(x),
     N = nrow(x),
     X = t(x),
@@ -33,4 +35,12 @@ fit_glm <- function(model, x, t, sd = data.frame(), M = 8, M.r = 4, iter = 2000)
     basis_r = t(basis_r)
   ),
   iter = iter, refresh = 0, pars = c("f", "r", "S", "A", "mu"))
+
+  model$stanfit <- fit
+  model$data <- x
+  model$t <- t
+  model$model_name <- fit@model_name
+  class(model) <- c("FrameFit", class(model))
+
+  return(model)
 }

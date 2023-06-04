@@ -1,26 +1,27 @@
 data {
+  int<lower=1> d;
   int<lower=1> N;
   int<lower=1> K;
   int<lower=0> L;
-  matrix[2,N] x;
-  matrix[2,K] b;
-  matrix[2,K] sdev;
-  vector[2] sigma;
-  matrix[L > 0 ? 2 : 0, L > 0 ? L : 0] frac;
-  matrix[L > 0 ? 2 : 0, L > 0 ? L : 0] frac_sdev;
+  matrix[d,N] x;
+  matrix[d,K] b;
+  matrix[d,K] sdev;
+  vector[d] sigma;
+  matrix[L > 0 ? d : 0, L > 0 ? L : 0] frac;
+  matrix[L > 0 ? d : 0, L > 0 ? L : 0] frac_sdev;
 }
 parameters {
   simplex[K] f;
   vector<lower=0, upper=1>[L] r;
-  matrix<lower=-0.5, upper=0.5>[2,K] s;
-  matrix[L > 0 ? 2 : 0, L > 0 ? L : 0] a;
+  matrix<lower=-0.5, upper=0.5>[d,K] s;
+  matrix[L > 0 ? d : 0, L > 0 ? L : 0] a;
 }
 transformed parameters {
-  vector[2] mu;
+  vector[d] mu;
   mu = (b + s .* sdev) * f;
   if(L > 0) mu += a * log(r);
 }
 model {
-  if (L > 0) for (d in 1:2) a[d] ~ normal(frac[d], frac_sdev[d]);
-  for (d in 1:2) x[d] ~ normal(mu[d], sigma[d]);
+  if (L > 0) for (i in 1:d) a[i] ~ normal(frac[i], frac_sdev[i]);
+  for (i in 1:d) x[i] ~ normal(mu[i], sigma[i]);
 }

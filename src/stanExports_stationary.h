@@ -33,13 +33,14 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_stationary");
-    reader.add_event(28, 26, "end", "model_stationary");
+    reader.add_event(29, 27, "end", "model_stationary");
     return reader;
 }
 #include <stan_meta_header.hpp>
 class model_stationary
   : public stan::model::model_base_crtp<model_stationary> {
 private:
+        int d;
         int N;
         int K;
         int L;
@@ -80,101 +81,108 @@ public:
         try {
             // initialize data block variables from context__
             current_statement_begin__ = 2;
+            context__.validate_dims("data initialization", "d", "int", context__.to_vec());
+            d = int(0);
+            vals_i__ = context__.vals_i("d");
+            pos__ = 0;
+            d = vals_i__[pos__++];
+            check_greater_or_equal(function__, "d", d, 1);
+            current_statement_begin__ = 3;
             context__.validate_dims("data initialization", "N", "int", context__.to_vec());
             N = int(0);
             vals_i__ = context__.vals_i("N");
             pos__ = 0;
             N = vals_i__[pos__++];
             check_greater_or_equal(function__, "N", N, 1);
-            current_statement_begin__ = 3;
+            current_statement_begin__ = 4;
             context__.validate_dims("data initialization", "K", "int", context__.to_vec());
             K = int(0);
             vals_i__ = context__.vals_i("K");
             pos__ = 0;
             K = vals_i__[pos__++];
             check_greater_or_equal(function__, "K", K, 1);
-            current_statement_begin__ = 4;
+            current_statement_begin__ = 5;
             context__.validate_dims("data initialization", "L", "int", context__.to_vec());
             L = int(0);
             vals_i__ = context__.vals_i("L");
             pos__ = 0;
             L = vals_i__[pos__++];
             check_greater_or_equal(function__, "L", L, 0);
-            current_statement_begin__ = 5;
-            validate_non_negative_index("x", "2", 2);
+            current_statement_begin__ = 6;
+            validate_non_negative_index("x", "d", d);
             validate_non_negative_index("x", "N", N);
-            context__.validate_dims("data initialization", "x", "matrix_d", context__.to_vec(2,N));
-            x = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>(2, N);
+            context__.validate_dims("data initialization", "x", "matrix_d", context__.to_vec(d,N));
+            x = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>(d, N);
             vals_r__ = context__.vals_r("x");
             pos__ = 0;
             size_t x_j_2_max__ = N;
-            size_t x_j_1_max__ = 2;
+            size_t x_j_1_max__ = d;
             for (size_t j_2__ = 0; j_2__ < x_j_2_max__; ++j_2__) {
                 for (size_t j_1__ = 0; j_1__ < x_j_1_max__; ++j_1__) {
                     x(j_1__, j_2__) = vals_r__[pos__++];
                 }
             }
-            current_statement_begin__ = 6;
-            validate_non_negative_index("b", "2", 2);
+            current_statement_begin__ = 7;
+            validate_non_negative_index("b", "d", d);
             validate_non_negative_index("b", "K", K);
-            context__.validate_dims("data initialization", "b", "matrix_d", context__.to_vec(2,K));
-            b = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>(2, K);
+            context__.validate_dims("data initialization", "b", "matrix_d", context__.to_vec(d,K));
+            b = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>(d, K);
             vals_r__ = context__.vals_r("b");
             pos__ = 0;
             size_t b_j_2_max__ = K;
-            size_t b_j_1_max__ = 2;
+            size_t b_j_1_max__ = d;
             for (size_t j_2__ = 0; j_2__ < b_j_2_max__; ++j_2__) {
                 for (size_t j_1__ = 0; j_1__ < b_j_1_max__; ++j_1__) {
                     b(j_1__, j_2__) = vals_r__[pos__++];
                 }
             }
-            current_statement_begin__ = 7;
-            validate_non_negative_index("sdev", "2", 2);
+            current_statement_begin__ = 8;
+            validate_non_negative_index("sdev", "d", d);
             validate_non_negative_index("sdev", "K", K);
-            context__.validate_dims("data initialization", "sdev", "matrix_d", context__.to_vec(2,K));
-            sdev = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>(2, K);
+            context__.validate_dims("data initialization", "sdev", "matrix_d", context__.to_vec(d,K));
+            sdev = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>(d, K);
             vals_r__ = context__.vals_r("sdev");
             pos__ = 0;
             size_t sdev_j_2_max__ = K;
-            size_t sdev_j_1_max__ = 2;
+            size_t sdev_j_1_max__ = d;
             for (size_t j_2__ = 0; j_2__ < sdev_j_2_max__; ++j_2__) {
                 for (size_t j_1__ = 0; j_1__ < sdev_j_1_max__; ++j_1__) {
                     sdev(j_1__, j_2__) = vals_r__[pos__++];
                 }
             }
-            current_statement_begin__ = 8;
-            validate_non_negative_index("sigma", "2", 2);
-            context__.validate_dims("data initialization", "sigma", "vector_d", context__.to_vec(2));
-            sigma = Eigen::Matrix<double, Eigen::Dynamic, 1>(2);
+            current_statement_begin__ = 9;
+            validate_non_negative_index("sigma", "d", d);
+            context__.validate_dims("data initialization", "sigma", "vector_d", context__.to_vec(d));
+            sigma = Eigen::Matrix<double, Eigen::Dynamic, 1>(d);
             vals_r__ = context__.vals_r("sigma");
             pos__ = 0;
-            size_t sigma_j_1_max__ = 2;
+            size_t sigma_j_1_max__ = d;
             for (size_t j_1__ = 0; j_1__ < sigma_j_1_max__; ++j_1__) {
                 sigma(j_1__) = vals_r__[pos__++];
             }
-            current_statement_begin__ = 9;
-            validate_non_negative_index("frac", "(logical_gt(L, 0) ? 2 : 0 )", (logical_gt(L, 0) ? 2 : 0 ));
+            current_statement_begin__ = 10;
+            validate_non_negative_index("frac", "(logical_gt(L, 0) ? d : 0 )", (logical_gt(L, 0) ? d : 0 ));
             validate_non_negative_index("frac", "(logical_gt(L, 0) ? L : 0 )", (logical_gt(L, 0) ? L : 0 ));
-            context__.validate_dims("data initialization", "frac", "matrix_d", context__.to_vec((logical_gt(L, 0) ? 2 : 0 ),(logical_gt(L, 0) ? L : 0 )));
-            frac = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>((logical_gt(L, 0) ? 2 : 0 ), (logical_gt(L, 0) ? L : 0 ));
+            context__.validate_dims("data initialization", "frac", "matrix_d", context__.to_vec((logical_gt(L, 0) ? d : 0 ),(logical_gt(L, 0) ? L : 0 )));
+            frac = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>((logical_gt(L, 0) ? d : 0 ), (logical_gt(L, 0) ? L : 0 ));
             vals_r__ = context__.vals_r("frac");
             pos__ = 0;
             size_t frac_j_2_max__ = (logical_gt(L, 0) ? L : 0 );
-            size_t frac_j_1_max__ = (logical_gt(L, 0) ? 2 : 0 );
+            size_t frac_j_1_max__ = (logical_gt(L, 0) ? d : 0 );
             for (size_t j_2__ = 0; j_2__ < frac_j_2_max__; ++j_2__) {
                 for (size_t j_1__ = 0; j_1__ < frac_j_1_max__; ++j_1__) {
                     frac(j_1__, j_2__) = vals_r__[pos__++];
                 }
             }
-            current_statement_begin__ = 10;
-            validate_non_negative_index("frac_sdev", "(logical_gt(L, 0) ? 2 : 0 )", (logical_gt(L, 0) ? 2 : 0 ));
+            current_statement_begin__ = 11;
+            validate_non_negative_index("frac_sdev", "(logical_gt(L, 0) ? d : 0 )", (logical_gt(L, 0) ? d : 0 ));
             validate_non_negative_index("frac_sdev", "(logical_gt(L, 0) ? L : 0 )", (logical_gt(L, 0) ? L : 0 ));
-            context__.validate_dims("data initialization", "frac_sdev", "matrix_d", context__.to_vec((logical_gt(L, 0) ? 2 : 0 ),(logical_gt(L, 0) ? L : 0 )));
-            frac_sdev = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>((logical_gt(L, 0) ? 2 : 0 ), (logical_gt(L, 0) ? L : 0 ));
+            context__.validate_dims("data initialization", "frac_sdev", "matrix_d", context__.to_vec((logical_gt(L, 0) ? d : 0 ),(logical_gt(L, 0) ? L : 0 )));
+            frac_sdev = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>((logical_gt(L, 0) ? d : 0 ), (logical_gt(L, 0) ? L : 0 ));
             vals_r__ = context__.vals_r("frac_sdev");
             pos__ = 0;
             size_t frac_sdev_j_2_max__ = (logical_gt(L, 0) ? L : 0 );
-            size_t frac_sdev_j_1_max__ = (logical_gt(L, 0) ? 2 : 0 );
+            size_t frac_sdev_j_1_max__ = (logical_gt(L, 0) ? d : 0 );
             for (size_t j_2__ = 0; j_2__ < frac_sdev_j_2_max__; ++j_2__) {
                 for (size_t j_1__ = 0; j_1__ < frac_sdev_j_1_max__; ++j_1__) {
                     frac_sdev(j_1__, j_2__) = vals_r__[pos__++];
@@ -186,20 +194,20 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 13;
+            current_statement_begin__ = 14;
             validate_non_negative_index("f", "K", K);
             num_params_r__ += (K - 1);
-            current_statement_begin__ = 14;
+            current_statement_begin__ = 15;
             validate_non_negative_index("r", "L", L);
             num_params_r__ += L;
-            current_statement_begin__ = 15;
-            validate_non_negative_index("s", "2", 2);
-            validate_non_negative_index("s", "K", K);
-            num_params_r__ += (2 * K);
             current_statement_begin__ = 16;
-            validate_non_negative_index("a", "(logical_gt(L, 0) ? 2 : 0 )", (logical_gt(L, 0) ? 2 : 0 ));
+            validate_non_negative_index("s", "d", d);
+            validate_non_negative_index("s", "K", K);
+            num_params_r__ += (d * K);
+            current_statement_begin__ = 17;
+            validate_non_negative_index("a", "(logical_gt(L, 0) ? d : 0 )", (logical_gt(L, 0) ? d : 0 ));
             validate_non_negative_index("a", "(logical_gt(L, 0) ? L : 0 )", (logical_gt(L, 0) ? L : 0 ));
-            num_params_r__ += ((logical_gt(L, 0) ? 2 : 0 ) * (logical_gt(L, 0) ? L : 0 ));
+            num_params_r__ += ((logical_gt(L, 0) ? d : 0 ) * (logical_gt(L, 0) ? L : 0 ));
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
             // Next line prevents compiler griping about no return
@@ -217,7 +225,7 @@ public:
         (void) pos__; // dummy call to supress warning
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
-        current_statement_begin__ = 13;
+        current_statement_begin__ = 14;
         if (!(context__.contains_r("f")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable f missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("f");
@@ -234,7 +242,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable f: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 14;
+        current_statement_begin__ = 15;
         if (!(context__.contains_r("r")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable r missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("r");
@@ -251,17 +259,17 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable r: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 15;
+        current_statement_begin__ = 16;
         if (!(context__.contains_r("s")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable s missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("s");
         pos__ = 0U;
-        validate_non_negative_index("s", "2", 2);
+        validate_non_negative_index("s", "d", d);
         validate_non_negative_index("s", "K", K);
-        context__.validate_dims("parameter initialization", "s", "matrix_d", context__.to_vec(2,K));
-        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> s(2, K);
+        context__.validate_dims("parameter initialization", "s", "matrix_d", context__.to_vec(d,K));
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> s(d, K);
         size_t s_j_2_max__ = K;
-        size_t s_j_1_max__ = 2;
+        size_t s_j_1_max__ = d;
         for (size_t j_2__ = 0; j_2__ < s_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < s_j_1_max__; ++j_1__) {
                 s(j_1__, j_2__) = vals_r__[pos__++];
@@ -272,17 +280,17 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable s: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 16;
+        current_statement_begin__ = 17;
         if (!(context__.contains_r("a")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable a missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("a");
         pos__ = 0U;
-        validate_non_negative_index("a", "(logical_gt(L, 0) ? 2 : 0 )", (logical_gt(L, 0) ? 2 : 0 ));
+        validate_non_negative_index("a", "(logical_gt(L, 0) ? d : 0 )", (logical_gt(L, 0) ? d : 0 ));
         validate_non_negative_index("a", "(logical_gt(L, 0) ? L : 0 )", (logical_gt(L, 0) ? L : 0 ));
-        context__.validate_dims("parameter initialization", "a", "matrix_d", context__.to_vec((logical_gt(L, 0) ? 2 : 0 ),(logical_gt(L, 0) ? L : 0 )));
-        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a((logical_gt(L, 0) ? 2 : 0 ), (logical_gt(L, 0) ? L : 0 ));
+        context__.validate_dims("parameter initialization", "a", "matrix_d", context__.to_vec((logical_gt(L, 0) ? d : 0 ),(logical_gt(L, 0) ? L : 0 )));
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a((logical_gt(L, 0) ? d : 0 ), (logical_gt(L, 0) ? L : 0 ));
         size_t a_j_2_max__ = (logical_gt(L, 0) ? L : 0 );
-        size_t a_j_1_max__ = (logical_gt(L, 0) ? 2 : 0 );
+        size_t a_j_1_max__ = (logical_gt(L, 0) ? d : 0 );
         for (size_t j_2__ = 0; j_2__ < a_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < a_j_1_max__; ++j_1__) {
                 a(j_1__, j_2__) = vals_r__[pos__++];
@@ -318,53 +326,53 @@ public:
         try {
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
-            current_statement_begin__ = 13;
+            current_statement_begin__ = 14;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> f;
             (void) f;  // dummy to suppress unused var warning
             if (jacobian__)
                 f = in__.simplex_constrain(K, lp__);
             else
                 f = in__.simplex_constrain(K);
-            current_statement_begin__ = 14;
+            current_statement_begin__ = 15;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> r;
             (void) r;  // dummy to suppress unused var warning
             if (jacobian__)
                 r = in__.vector_lub_constrain(0, 1, L, lp__);
             else
                 r = in__.vector_lub_constrain(0, 1, L);
-            current_statement_begin__ = 15;
+            current_statement_begin__ = 16;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> s;
             (void) s;  // dummy to suppress unused var warning
             if (jacobian__)
-                s = in__.matrix_lub_constrain(-(0.5), 0.5, 2, K, lp__);
+                s = in__.matrix_lub_constrain(-(0.5), 0.5, d, K, lp__);
             else
-                s = in__.matrix_lub_constrain(-(0.5), 0.5, 2, K);
-            current_statement_begin__ = 16;
+                s = in__.matrix_lub_constrain(-(0.5), 0.5, d, K);
+            current_statement_begin__ = 17;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> a;
             (void) a;  // dummy to suppress unused var warning
             if (jacobian__)
-                a = in__.matrix_constrain((logical_gt(L, 0) ? 2 : 0 ), (logical_gt(L, 0) ? L : 0 ), lp__);
+                a = in__.matrix_constrain((logical_gt(L, 0) ? d : 0 ), (logical_gt(L, 0) ? L : 0 ), lp__);
             else
-                a = in__.matrix_constrain((logical_gt(L, 0) ? 2 : 0 ), (logical_gt(L, 0) ? L : 0 ));
+                a = in__.matrix_constrain((logical_gt(L, 0) ? d : 0 ), (logical_gt(L, 0) ? L : 0 ));
             // transformed parameters
-            current_statement_begin__ = 19;
-            validate_non_negative_index("mu", "2", 2);
-            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> mu(2);
+            current_statement_begin__ = 20;
+            validate_non_negative_index("mu", "d", d);
+            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> mu(d);
             stan::math::initialize(mu, DUMMY_VAR__);
             stan::math::fill(mu, DUMMY_VAR__);
             // transformed parameters block statements
-            current_statement_begin__ = 20;
-            stan::math::assign(mu, multiply(add(b, elt_multiply(s, sdev)), f));
             current_statement_begin__ = 21;
+            stan::math::assign(mu, multiply(add(b, elt_multiply(s, sdev)), f));
+            current_statement_begin__ = 22;
             if (as_bool(logical_gt(L, 0))) {
-                current_statement_begin__ = 21;
+                current_statement_begin__ = 22;
                 stan::math::assign(mu, add(mu, multiply(a, stan::math::log(r))));
             }
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 19;
-            size_t mu_j_1_max__ = 2;
+            current_statement_begin__ = 20;
+            size_t mu_j_1_max__ = d;
             for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(mu(j_1__))) {
                     std::stringstream msg__;
@@ -373,18 +381,18 @@ public:
                 }
             }
             // model body
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 25;
             if (as_bool(logical_gt(L, 0))) {
-                current_statement_begin__ = 24;
-                for (int d = 1; d <= 2; ++d) {
-                    current_statement_begin__ = 24;
-                    lp_accum__.add(normal_log<propto__>(get_base1(a, d, "a", 1), get_base1(frac, d, "frac", 1), get_base1(frac_sdev, d, "frac_sdev", 1)));
+                current_statement_begin__ = 25;
+                for (int i = 1; i <= d; ++i) {
+                    current_statement_begin__ = 25;
+                    lp_accum__.add(normal_log<propto__>(get_base1(a, i, "a", 1), get_base1(frac, i, "frac", 1), get_base1(frac_sdev, i, "frac_sdev", 1)));
                 }
             }
-            current_statement_begin__ = 25;
-            for (int d = 1; d <= 2; ++d) {
-                current_statement_begin__ = 25;
-                lp_accum__.add(normal_log<propto__>(get_base1(x, d, "x", 1), get_base1(mu, d, "mu", 1), get_base1(sigma, d, "sigma", 1)));
+            current_statement_begin__ = 26;
+            for (int i = 1; i <= d; ++i) {
+                current_statement_begin__ = 26;
+                lp_accum__.add(normal_log<propto__>(get_base1(x, i, "x", 1), get_base1(mu, i, "mu", 1), get_base1(sigma, i, "sigma", 1)));
             }
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -422,15 +430,15 @@ public:
         dims__.push_back(L);
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back(2);
+        dims__.push_back(d);
         dims__.push_back(K);
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back((logical_gt(L, 0) ? 2 : 0 ));
+        dims__.push_back((logical_gt(L, 0) ? d : 0 ));
         dims__.push_back((logical_gt(L, 0) ? L : 0 ));
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back(2);
+        dims__.push_back(d);
         dimss__.push_back(dims__);
     }
     template <typename RNG>
@@ -457,17 +465,17 @@ public:
         for (size_t j_1__ = 0; j_1__ < r_j_1_max__; ++j_1__) {
             vars__.push_back(r(j_1__));
         }
-        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> s = in__.matrix_lub_constrain(-(0.5), 0.5, 2, K);
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> s = in__.matrix_lub_constrain(-(0.5), 0.5, d, K);
         size_t s_j_2_max__ = K;
-        size_t s_j_1_max__ = 2;
+        size_t s_j_1_max__ = d;
         for (size_t j_2__ = 0; j_2__ < s_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < s_j_1_max__; ++j_1__) {
                 vars__.push_back(s(j_1__, j_2__));
             }
         }
-        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a = in__.matrix_constrain((logical_gt(L, 0) ? 2 : 0 ), (logical_gt(L, 0) ? L : 0 ));
+        Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> a = in__.matrix_constrain((logical_gt(L, 0) ? d : 0 ), (logical_gt(L, 0) ? L : 0 ));
         size_t a_j_2_max__ = (logical_gt(L, 0) ? L : 0 );
-        size_t a_j_1_max__ = (logical_gt(L, 0) ? 2 : 0 );
+        size_t a_j_1_max__ = (logical_gt(L, 0) ? d : 0 );
         for (size_t j_2__ = 0; j_2__ < a_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < a_j_1_max__; ++j_1__) {
                 vars__.push_back(a(j_1__, j_2__));
@@ -481,17 +489,17 @@ public:
         if (!include_tparams__ && !include_gqs__) return;
         try {
             // declare and define transformed parameters
-            current_statement_begin__ = 19;
-            validate_non_negative_index("mu", "2", 2);
-            Eigen::Matrix<double, Eigen::Dynamic, 1> mu(2);
+            current_statement_begin__ = 20;
+            validate_non_negative_index("mu", "d", d);
+            Eigen::Matrix<double, Eigen::Dynamic, 1> mu(d);
             stan::math::initialize(mu, DUMMY_VAR__);
             stan::math::fill(mu, DUMMY_VAR__);
             // do transformed parameters statements
-            current_statement_begin__ = 20;
-            stan::math::assign(mu, multiply(add(b, elt_multiply(s, sdev)), f));
             current_statement_begin__ = 21;
+            stan::math::assign(mu, multiply(add(b, elt_multiply(s, sdev)), f));
+            current_statement_begin__ = 22;
             if (as_bool(logical_gt(L, 0))) {
-                current_statement_begin__ = 21;
+                current_statement_begin__ = 22;
                 stan::math::assign(mu, add(mu, multiply(a, stan::math::log(r))));
             }
             if (!include_gqs__ && !include_tparams__) return;
@@ -500,7 +508,7 @@ public:
             (void) function__;  // dummy to suppress unused var warning
             // write transformed parameters
             if (include_tparams__) {
-                size_t mu_j_1_max__ = 2;
+                size_t mu_j_1_max__ = d;
                 for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
                     vars__.push_back(mu(j_1__));
                 }
@@ -549,7 +557,7 @@ public:
             param_names__.push_back(param_name_stream__.str());
         }
         size_t s_j_2_max__ = K;
-        size_t s_j_1_max__ = 2;
+        size_t s_j_1_max__ = d;
         for (size_t j_2__ = 0; j_2__ < s_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < s_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
@@ -558,7 +566,7 @@ public:
             }
         }
         size_t a_j_2_max__ = (logical_gt(L, 0) ? L : 0 );
-        size_t a_j_1_max__ = (logical_gt(L, 0) ? 2 : 0 );
+        size_t a_j_1_max__ = (logical_gt(L, 0) ? d : 0 );
         for (size_t j_2__ = 0; j_2__ < a_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < a_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
@@ -568,7 +576,7 @@ public:
         }
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
-            size_t mu_j_1_max__ = 2;
+            size_t mu_j_1_max__ = d;
             for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
                 param_name_stream__ << "mu" << '.' << j_1__ + 1;
@@ -594,7 +602,7 @@ public:
             param_names__.push_back(param_name_stream__.str());
         }
         size_t s_j_2_max__ = K;
-        size_t s_j_1_max__ = 2;
+        size_t s_j_1_max__ = d;
         for (size_t j_2__ = 0; j_2__ < s_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < s_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
@@ -603,7 +611,7 @@ public:
             }
         }
         size_t a_j_2_max__ = (logical_gt(L, 0) ? L : 0 );
-        size_t a_j_1_max__ = (logical_gt(L, 0) ? 2 : 0 );
+        size_t a_j_1_max__ = (logical_gt(L, 0) ? d : 0 );
         for (size_t j_2__ = 0; j_2__ < a_j_2_max__; ++j_2__) {
             for (size_t j_1__ = 0; j_1__ < a_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
@@ -613,7 +621,7 @@ public:
         }
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
-            size_t mu_j_1_max__ = 2;
+            size_t mu_j_1_max__ = d;
             for (size_t j_1__ = 0; j_1__ < mu_j_1_max__; ++j_1__) {
                 param_name_stream__.str(std::string());
                 param_name_stream__ << "mu" << '.' << j_1__ + 1;

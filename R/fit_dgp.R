@@ -11,8 +11,9 @@
 fit_dgp <- function(model, x, t, sd = data.frame(), rho = 0.1, rho.r = 0.2, iter = 2000) {
   if(nrow(sd) == 0) sd <- matrix(0, nrow = nrow(x), ncol = ncol(x))
   else if(nrow(sd) != nrow(x) && ncol(sd) != ncol(x)) stop("Matrix of data and sd must have the same size, found ", dim(data), " and ", dim(sd))
+  if(nrow(x) != length(t)) stop("Data and time points have different lengths.")
 
-  sampling(stanmodels$dgp, data = list(
+  fit <- sampling(stanmodels$dgp, data = list(
     d = ncol(x),
     N = nrow(x),
     X = t(x),
@@ -26,4 +27,12 @@ fit_dgp <- function(model, x, t, sd = data.frame(), rho = 0.1, rho.r = 0.2, iter
     rho_r = rho.r
   ),
   iter = iter, refresh = 0, pars = c("f", "r", "S", "A", "mu"))
+
+  model$stanfit <- fit
+  model$data <- x
+  model$t <- t
+  model$model_name <- fit@model_name
+  class(model) <- c("FrameFit", class(model))
+
+  return(model)
 }

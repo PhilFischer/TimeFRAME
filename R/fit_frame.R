@@ -9,7 +9,7 @@ fit_frame <- function(model, x, sd = data.frame(), iter = 2000) {
   if(nrow(sd) == 0) sd <- matrix(0, nrow = nrow(x), ncol = ncol(x))
   else if(nrow(sd) != nrow(x) && ncol(sd) != ncol(x)) stop("Matrix of data and sd must have the same size, found ", dim(data), " and ", dim(sd))
 
-  sampling(stanmodels$frame, data = list(
+  fit <- sampling(stanmodels$frame, data = list(
     d = ncol(x),
     N = nrow(x),
     X = t(x),
@@ -23,4 +23,12 @@ fit_frame <- function(model, x, sd = data.frame(), iter = 2000) {
     alpha_r = 1
   ),
   iter = iter, refresh = 0, pars = c("f", "r", "S", "A", "mu"))
+
+  model$stanfit <- fit
+  model$data <- x
+  model$t <- NULL
+  model$model_name <- fit@model_name
+  class(model) <- c("FrameFit", class(model))
+
+  return(model)
 }
