@@ -2,6 +2,7 @@
 
 S3method(print,FrameModel)
 export("%>%")
+export(fit_dgp)
 export(fit_frame)
 export(fit_glm)
 export(fit_gp)
