@@ -27,10 +27,10 @@ frame_model <- function(sources, frac = data.frame()) {
 
 #' Print FRAME model
 #'
+#' @export
 #' @description Print an object of type FrameModel.
 #' @param x an object of type FrameModel.
 #' @param ... further arguments passed to or from other methods.
-#' @export
 print.FrameModel <- function(x, ...) {
   cat("FRAME Model\n")
   cat("===========\n\n")

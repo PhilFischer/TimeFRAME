@@ -4,7 +4,18 @@
 \alias{fit_dgp}
 \title{Fit Dirichlet-Gaussian process prior model}
 \usage{
-fit_dgp(model, x, t, sd = data.frame(), rho = 0.1, rho.r = 0.2, iter = 2000)
+fit_dgp(
+  model,
+  x,
+  t,
+  sd = data.frame(),
+  eta = 0,
+  rho = 0.3,
+  rho.r = 0.6,
+  iter = 2000,
+  cores = 1,
+  chains = 4
+)
 }
 \arguments{
 \item{model}{Object of type FrameModel.}
@@ -15,11 +26,17 @@ fit_dgp(model, x, t, sd = data.frame(), rho = 0.1, rho.r = 0.2, iter = 2000)
 
 \item{sd}{Data frame corresponding to measurement errors (Default empty data.frame).}
 
-\item{rho}{Numeric, scaled correlation length for source contributions (Default 0.1).}
+\item{eta}{numeric or vector, measurement noise magnitude (Default 0).}
 
-\item{rho.r}{Numeric, scaled correlation length for fractionation (Default 0.2).}
+\item{rho}{Numeric, scaled correlation length for source contributions (Default 0.3).}
+
+\item{rho.r}{Numeric, scaled correlation length for fractionation (Default 0.6).}
 
 \item{iter}{Numeric, number of sampler iterations (Default 2000).}
+
+\item{cores}{Integer, number of cores to use (Default = 1).}
+
+\item{chains}{Integer, number of chains to use (Default = 4).}
 }
 \description{
 Fit Dirichlet-Gaussian process prior model

@@ -7,8 +7,7 @@
 frame_model(sources, frac = data.frame())
 }
 \arguments{
-\item{sources}{data frame with \eqn{d} columns corresponding to isotopic measurement dimensions and \eqn{2K} rows,
-the first \eqn{K} corresponding to source locations and the next \eqn{K} corresponding to source spreads.}
+\item{sources}{data frame with \eqn{d} columns corresponding to isotopic measurement dimensions and \eqn{2K} rows, the first \eqn{K} corresponding to source locations and the next \eqn{K} corresponding to source spreads.}
 
 \item{frac}{data frame with \eqn{d} columns corresponding to isotopic measurement dimensions and \eqn{2L} rows,
 the first \eqn{L} corresponding to fractionation factor means and the next \eqn{L} corresponding to their standard deviations.}

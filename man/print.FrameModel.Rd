@@ -7,7 +7,7 @@
 \method{print}{FrameModel}(x, ...)
 }
 \arguments{
-\item{x}{an object of type \code{FrameModel}.}
+\item{x}{an object of type FrameModel.}
 
 \item{...}{further arguments passed to or from other methods.}
 }

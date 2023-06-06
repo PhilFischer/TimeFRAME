@@ -47,6 +47,55 @@ test_that("Param map works", {
 })
 
 
+test_that("Sample measurements works", {
+  m <- frame_model(matrix(c(0,1,1,1), ncol = 2))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.5), 1), size = 1)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.3,0.9,0.5,0.7,0.1), ncol = 2), 1)) # edge case
+
+  m <- frame_model(matrix(c(0,0,1,0,1,0,1,1,1,1,1,1), ncol = 4))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.2, 0.3), 1), size = 2)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.4,0.9,0.3,0.4,0.05,0.2,0.2,0.05), ncol = 3), 1), size = 3)
+
+  m <- frame_model(matrix(c(0,0,0,1,0,0,1,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 6))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.2, 0.2, 0.1), 1), size = 3)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.4,0.8,0.2,0.3,0.1,0.2,0.2,0.05,0.1,0.1,0.05), ncol = 4), 1), size = 3)
+
+  m <- frame_model(matrix(c(0,1,1,0,1,1,1,1), ncol = 4))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.5), 1), size = 2)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.3,0.9,0.5,0.7,0.1), ncol = 2), 1), size = 3)
+
+  m <- frame_model(matrix(c(0,0,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1), ncol = 6))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.3, 0.2), 1), size = 3)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.4,0.9,0.3,0.4,0.05,0.2,0.2,0.05), ncol = 3), 1), size = 3)
+
+  m <- frame_model(matrix(c(0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 8))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.2, 0.2, 0.1), 1), size = 4)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.4,0.8,0.2,0.3,0.1,0.2,0.2,0.05,0.1,0.1,0.05), ncol = 4), 1), size = 3)
+
+  m <- frame_model(matrix(c(0,1,1,0,1,1,1,1), ncol = 4),
+                   frac = matrix(c(-1,-1,1,1), ncol = 4))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.5, 0.7), 1), size = 2)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.3,0.9,0.5,0.7,0.1,0.5,0.6,0.7), ncol = 3), 1), size = 3)
+
+  m <- frame_model(matrix(c(0,0,1,0,1,0,1,0,0,1,1,1,1,1,1,1,1,1), ncol = 6),
+                   frac = matrix(c(-1,-1,-1,1,1,1), ncol = 6))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.3, 0.2, 0.7), 1), size = 3)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.4,0.9,0.3,0.4,0.05,0.2,0.2,0.05,0.5,0.6,0.7), ncol = 4), 1), size = 3)
+
+  m <- frame_model(matrix(c(0,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 8),
+                   frac = matrix(c(-1,-1,-1,-1,1,1,1,1), ncol = 8))
+  testthat::expect_vector(sample_measurements(m, c(0.5, 0.2, 0.2, 0.1, 0.7), 1), size = 4)
+  testthat::expect_vector(sample_measurements(m, matrix(c(0.5,0.4,0.8,0.2,0.3,0.1,0.2,0.2,0.05,0.1,0.1,0.05,0.5,0.6,0.7), ncol = 5), 1), size = 3)
+
+  m <- frame_model(n2o_sources, n2o_frac)
+  s <- sample_measurements(m, c(0.5, 0.4, 0.1, 1), 1)
+  testthat::expect_equal(names(s), names(n2o_sources)[1:m$dims$K])
+  s <- sample_measurements(m, matrix(c(0.5, 0.5, 0.4, 0.4, 0.1, 0.1, 1, 1), ncol = 4), 1)
+  testthat::expect_equal(colnames(s), names(n2o_sources)[1:m$dims$K])
+
+})
+
+
 test_that("Isotope map works with well-defined equations", {
   m <- frame_model(matrix(c(0,1,1,1), ncol = 2))
   testthat::expect_equal(isotope_map(m, c(0.5)), c(0.5,0.5), ignore_attr = TRUE)

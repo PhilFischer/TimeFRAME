@@ -4,16 +4,20 @@
 \alias{fit_frame}
 \title{Fit independent time step model}
 \usage{
-fit_frame(model, x, sd = data.frame(), iter = 2000)
+fit_frame(model, x, t = NULL, sd = data.frame(), eta = 0, iter = 2000)
 }
 \arguments{
 \item{model}{Object of type FrameModel.}
 
 \item{x}{Data frame corresponding to isotopic measurements.}
 
-\item{sd}{Data frame corresponding to measurement errors.}
+\item{t}{Vector of time points (Default NULL).}
 
-\item{iter}{Numeric, number of sampler iterations.}
+\item{sd}{Data frame corresponding to measurement errors (Default empty data.frame).}
+
+\item{eta}{numeric or vector, measurement noise magnitude (Default 0).}
+
+\item{iter}{Numeric, number of sampler iterations (Default 2000).}
 }
 \description{
 Fit independent time step model

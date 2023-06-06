@@ -1,0 +1,269 @@
+---
+title: "The TimeFRAME Package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The TimeFRAME Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+set.seed(1)
+```
+
+```{r setup}
+library(TimeFRAME)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Time series parameters
+N <- 64
+eta <- 5
+t <- seq(0, 2, length.out = N)
+n2o_labels <- c(d15N = bquote(delta^15 * "N"), d15NSP = bquote(delta^15 * "N" ^ "SP"))
+
+# Fix source contributions and fractionation weight
+d.weights <- data.frame(t = t) %>%
+  mutate(f1 = 0.5 + cos(4*t)/(1+t)) %>%
+  mutate(f1 = exp(f1)/(1+exp(f1)), f2 = 1-f1) %>%
+  mutate(r1 = 0.1 + 0.1 * t) %>%
+  rename(Ni = f1, bD = f2, Red = r1)
+
+# Create model class
+sources <- n2o_sources[1:2,c(1,2,4,5)]  # only 2 sources with 2 measurements
+frac <- n2o_frac[,c(1,2,4,5)]  # only 2 measurements
+model <- frame_model(sources, frac = frac)
+```
+
+
+```{r}
+# Compute measurement means
+d.mean <- param_map(model, d.weights[,-1]) %>% 
+  as.data.frame() %>%
+  add_column(t = d.weights$t, .before = 1)
+
+# Simulate measurements
+d.meas <- sample_measurements(model, d.weights[,-1], eta) %>% 
+  as.data.frame() %>%
+  add_column(t = d.weights$t, .before = 1)
+
+d.meas
+```
+
+
+```{r}
+# Plot means and sampled measurements
+d.mean %>%
+  pivot_longer(c(d15N, d15NSP), names_to = "variable", values_to = "mean") %>%
+  inner_join(d.meas %>%
+               pivot_longer(c(d15N, d15NSP), names_to = "variable"),
+             by = c("t", "variable")) %>%
+  mutate(variable = factor(variable, labels = n2o_labels)) %>%
+  ggplot() +
+  geom_line(aes(x = t, y = mean)) +
+  geom_point(aes(x = t, y = mean), shape = 1) +
+  geom_point(aes(x = t, y = value), col = "steelblue") +
+  geom_linerange(aes(x = t, ymin = value, ymax = mean), col = "steelblue", alpha = 0.6) +
+  geom_smooth(aes(x = t, y = value), col = "steelblue", fill = "steelblue") +
+  facet_grid(variable ~ ., scales = "free_y", labeller = label_parsed) +
+  xlab("Time") + ylab("Isotopic Measurement") +
+  theme_bw()
+```
+
+
+
+# Stationary Inference
+
+```{r}
+meas <- d.meas[,2:3]
+isotope_map(model, colMeans(meas))
+```
+
+
+```{r, warning = FALSE}
+system.time({ fit <- fit_stationary(model, meas, eta = eta) })
+```
+
+
+```{r}
+coef(fit)
+```
+
+
+```{r}
+as.data.frame(fit)
+```
+
+
+# Time Series Inference
+
+```{r}
+isotope_map(model, meas) %>%
+  as.data.frame() %>%
+  add_column(t = t) %>%
+  pivot_longer(-t, names_to = "variable", values_to = "pred") %>%
+  inner_join(d.weights %>%
+               pivot_longer(-t, names_to = "variable"),
+             by = c("t", "variable")) %>%
+  ggplot() +
+  geom_line(aes(x = t, y = value, group = variable), linewidth = 1, col = "gray80") +
+  geom_line(aes(x = t, y = pred, col = variable), linewidth = 1) +
+  ylim(0, 1) +
+  facet_grid(variable ~ .) +
+  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
+  labs(col = "Source", title = "Isotope Mapping") +
+  theme_bw()
+```
+
+
+## Independent FRAME Model
+
+```{r}
+system.time({ fit.frame <- fit_frame(model, meas, t = t, eta = eta) })
+```
+
+
+```{r}
+coef(fit.frame)
+```
+
+
+
+```{r}
+as.data.frame(fit.frame) %>%
+  inner_join(d.weights %>%
+               pivot_longer(-t, names_to = "variable"),
+             by = c("t", "source" = "variable")) %>%
+  ggplot() +
+  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
+  geom_line(aes(x = t, y = value, group = source)) +
+  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
+  ylim(0, 1) +
+  facet_grid(source ~ .) +
+  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
+  labs(col = "Source", title = "Independent FRAME Model") +
+  guides(fill = "none") +
+  theme_bw()
+```
+
+
+```{r}
+summary.FrameFit(fit.frame)
+class(fit.frame)
+``` 
+
+
+
+## Spline GLM Model
+
+```{r}
+system.time({ fit.glm <- fit_glm(model, meas, t = t, eta = eta) })
+```
+
+
+```{r}
+as.data.frame(fit.glm) %>%
+  inner_join(d.weights %>%
+               pivot_longer(-t, names_to = "variable"),
+             by = c("t", "source" = "variable")) %>%
+  ggplot() +
+  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
+  geom_line(aes(x = t, y = value, group = source)) +
+  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
+  ylim(0, 1) +
+  facet_grid(source ~ .) +
+  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
+  labs(col = "Source", title = "Spline GLM Model") +
+  guides(fill = "none") +
+  theme_bw()
+```
+
+
+
+## Gaussian Process Model
+
+```{r}
+system.time({ fit.gp <- fit_gp(model, meas, t = t, eta = eta, iter = 2000, cores = 4, chains = 4) })
+```
+
+
+```{r}
+as.data.frame(fit.gp) %>%
+  inner_join(d.weights %>%
+               pivot_longer(-t, names_to = "variable"),
+             by = c("t", "source" = "variable")) %>%
+  ggplot() +
+  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
+  geom_line(aes(x = t, y = value, group = source)) +
+  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
+  ylim(0, 1) +
+  facet_grid(source ~ .) +
+  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
+  labs(col = "Source", title = "GP Model") +
+  guides(fill = "none") +
+  theme_bw()
+```
+
+
+
+## Dirichlet-Gaussian Process Model
+
+```{r}
+system.time({ fit.dgp <- fit_dgp(model, meas, t = t, eta = eta, iter = 2000, cores = 4, chains = 4) })
+```
+
+
+```{r}
+as.data.frame(fit.dgp) %>%
+  inner_join(d.weights %>%
+               pivot_longer(-t, names_to = "variable"),
+             by = c("t", "source" = "variable")) %>%
+  ggplot() +
+  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
+  geom_line(aes(x = t, y = value, group = source)) +
+  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
+  ylim(0, 1) +
+  facet_grid(source ~ .) +
+  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
+  labs(col = "Source", title = "DGP Model") +
+  guides(fill = "none") +
+  theme_bw()
+```
+
+
+
+## Hierarchical Dirichlet-Gaussian Process Model
+
+```{r}
+system.time({ fit.hdgp <- fit_dgp(model, meas, t = t, eta = eta, estim.rho = TRUE, iter = 2000, cores = 4, chains = 4) })
+```
+
+
+```{r}
+as.data.frame(fit.hdgp) %>%
+  inner_join(d.weights %>%
+               pivot_longer(-t, names_to = "variable"),
+             by = c("t", "source" = "variable")) %>%
+  ggplot() +
+  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
+  geom_line(aes(x = t, y = value, group = source)) +
+  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
+  ylim(0, 1) +
+  facet_grid(source ~ .) +
+  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
+  labs(col = "Source", title = "DGP Model") +
+  guides(fill = "none") +
+  theme_bw()
+```
+
+
+
+
+

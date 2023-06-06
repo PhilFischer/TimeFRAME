@@ -14,6 +14,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 RcppExport SEXP _rcpp_module_boot_stan_fit4dgp_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4frame_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4gp_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4gp2_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4hdgp_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4spline_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4stationary_mod();
 
@@ -21,6 +23,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4dgp_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dgp_mod, 0},
     {"_rcpp_module_boot_stan_fit4frame_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4frame_mod, 0},
     {"_rcpp_module_boot_stan_fit4gp_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4gp_mod, 0},
+    {"_rcpp_module_boot_stan_fit4gp2_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4gp2_mod, 0},
+    {"_rcpp_module_boot_stan_fit4hdgp_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4hdgp_mod, 0},
     {"_rcpp_module_boot_stan_fit4spline_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4spline_mod, 0},
     {"_rcpp_module_boot_stan_fit4stationary_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4stationary_mod, 0},
     {NULL, NULL, 0}

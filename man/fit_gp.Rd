@@ -4,7 +4,17 @@
 \alias{fit_gp}
 \title{Fit Gaussian process prior on measurements}
 \usage{
-fit_gp(model, x, t, sd = data.frame(), rho = 0.1, iter = 2000)
+fit_gp(
+  model,
+  x,
+  t,
+  sd = data.frame(),
+  eta = 0,
+  rho = 0.5,
+  iter = 2000,
+  cores = 1,
+  chains = 4
+)
 }
 \arguments{
 \item{model}{Object of type FrameModel.}
@@ -15,9 +25,15 @@ fit_gp(model, x, t, sd = data.frame(), rho = 0.1, iter = 2000)
 
 \item{sd}{Data frame corresponding to measurement errors (Default empty data.frame).}
 
-\item{rho}{Numeric, scaled correlation length for Gaussian process (Default 0.1).}
+\item{eta}{numeric or vector, measurement noise magnitude (Default 0).}
 
-\item{iter}{Numeric, number of sampler iterations (Default 2000).}
+\item{rho}{Numeric, scaled correlation length for Gaussian process (Default 0.5).}
+
+\item{iter}{Integer, number of sampler iterations (Default 2000).}
+
+\item{cores}{Integer, number of cores to use (Default = 1).}
+
+\item{chains}{Integer, number of chains to use (Default = 4).}
 }
 \description{
 Fit Gaussian process prior on measurements

@@ -107,7 +107,7 @@ private:
         std::vector<double> t;
         matrix_d X;
         matrix_d X_sd;
-        double sigma;
+        vector_d eta;
         matrix_d basis;
         matrix_d basis_r;
         matrix_d SB;
@@ -251,12 +251,16 @@ public:
                 }
             }
             current_statement_begin__ = 28;
-            context__.validate_dims("data initialization", "sigma", "double", context__.to_vec());
-            sigma = double(0);
-            vals_r__ = context__.vals_r("sigma");
+            validate_non_negative_index("eta", "d", d);
+            context__.validate_dims("data initialization", "eta", "vector_d", context__.to_vec(d));
+            eta = Eigen::Matrix<double, Eigen::Dynamic, 1>(d);
+            vals_r__ = context__.vals_r("eta");
             pos__ = 0;
-            sigma = vals_r__[pos__++];
-            check_greater_or_equal(function__, "sigma", sigma, 0);
+            size_t eta_j_1_max__ = d;
+            for (size_t j_1__ = 0; j_1__ < eta_j_1_max__; ++j_1__) {
+                eta(j_1__) = vals_r__[pos__++];
+            }
+            check_greater_or_equal(function__, "eta", eta, 0);
             current_statement_begin__ = 29;
             validate_non_negative_index("basis", "M", M);
             validate_non_negative_index("basis", "N", N);
@@ -303,7 +307,7 @@ public:
                 current_statement_begin__ = 35;
                 stan::model::assign(sdev, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
-                            stan::math::sqrt(add(square(get_base1(X_sd, i, "X_sd", 1)), square(sigma))), 
+                            stan::math::sqrt(add(square(get_base1(X_sd, i, "X_sd", 1)), square(get_base1(eta, i, "eta", 1)))), 
                             "assigning variable sdev");
             }
             // validate transformed data

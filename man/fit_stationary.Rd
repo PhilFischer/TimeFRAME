@@ -4,14 +4,16 @@
 \alias{fit_stationary}
 \title{Fit stationary FRAME model}
 \usage{
-fit_stationary(model, x, iter = 2000)
+fit_stationary(model, x, eta, iter = 2000)
 }
 \arguments{
-\item{model}{Object of type FrameModel}
+\item{model}{an object of type FrameModel.}
 
-\item{x}{Data frame corresponding to isotopic measurements}
+\item{x}{a data frame corresponding to isotopic measurements.}
 
-\item{iter}{Number of sampler iterations (Default 2000)}
+\item{eta}{numeric or vector, measurement noise magnitude.}
+
+\item{iter}{integer, number of sampler iterations (Default 2000)}
 }
 \description{
 Fit stationary FRAME model

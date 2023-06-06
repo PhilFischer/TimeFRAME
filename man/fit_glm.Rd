@@ -4,7 +4,7 @@
 \alias{fit_glm}
 \title{Fit generalized linear model model with spline bases}
 \usage{
-fit_glm(model, x, t, sd = data.frame(), M = 8, M.r = 4, iter = 2000)
+fit_glm(model, x, t, sd = data.frame(), eta = 0, M = 8, M.r = 4, iter = 2000)
 }
 \arguments{
 \item{model}{Object of type FrameModel.}
@@ -14,6 +14,8 @@ fit_glm(model, x, t, sd = data.frame(), M = 8, M.r = 4, iter = 2000)
 \item{t}{Vector corresponding to time steps.}
 
 \item{sd}{Data frame corresponding to measurement errors (Default empty data.frame).}
+
+\item{eta}{numeric or vector, measurement noise magnitude (Default 0).}
 
 \item{M}{Integer, number of degrees of freedom for source contributions (Default 8).}
 

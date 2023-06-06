@@ -25,14 +25,14 @@ data {
   real t[N];
   matrix[d, N] X;
   matrix[d, N] X_sd;
-  real<lower=0> sigma;
+  vector<lower=0>[d] eta;
   matrix[M, N] basis;
   matrix[M_r, N] basis_r;
 }
 transformed data {
   matrix[K, (K-1)] SB = simplex_base(K);
   matrix[d, N] sdev;
-  for(i in 1:d) sdev[i] = sqrt(square(X_sd[i]) + square(sigma));
+  for(i in 1:d) sdev[i] = sqrt(square(X_sd[i]) + square(eta[i]));
 }
 parameters {
   matrix[(K-1), M] faux;

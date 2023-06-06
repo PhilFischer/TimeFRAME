@@ -7,12 +7,13 @@ data {
   matrix[L>0 ? (2*d) : 0, L] frac;
   matrix[d, N] X;
   matrix[d, N] X_sd;
-  real<lower=0> sigma;
+  vector<lower=0>[d] eta;
   real<lower=0> alpha;
   real<lower=0> alpha_r;
 }
 transformed data {
-  matrix[d, N] sdev = sqrt(square(X_sd) + square(sigma));
+  matrix[d, N] sdev;
+  for(i in 1:d) sdev[i] = sqrt(square(X_sd[i]) + square(eta[i]));
 }
 parameters {
   simplex[K] f[N];
@@ -24,8 +25,8 @@ transformed parameters {
   matrix[d, K] S;
   matrix[d, N] mu;
   S = b[1:d,] + baux .* b[(d+1):(2*d),];
-  for (i in 1:N) mu[,i] = S * f[i];
-  if (L > 0) mu += A * log(r);
+  for(i in 1:N) mu[,i] = S * f[i];
+  if(L > 0) mu += A * log(r);
 }
 model {
   if(alpha != 1) for(i in 1:N) f[i] ~ dirichlet(rep_vector(alpha, K));

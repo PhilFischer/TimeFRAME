@@ -9,7 +9,7 @@ coef.FrameFit <- function(object, point.est = "mean", ...) {
 
   if(object$model_name == "stationary") return(coef.FrameFit.stationary(object, point.est, ...))
   if(object$model_name %in% c("frame", "gp")) pattern <- c(f = "\\1\\3-\\2", r = "\\1\\2-\\3")
-  if(object$model_name %in% c("spline", "dgp")) pattern <- c(f = "\\1\\2-\\3", r = "\\1\\2-\\3")
+  if(object$model_name %in% c("spline", "dgp", "hdgp")) pattern <- c(f = "\\1\\2-\\3", r = "\\1\\2-\\3")
 
   res <- rstan::summary(object$stanfit)$summary %>%
     as.data.frame() %>%
@@ -23,9 +23,7 @@ coef.FrameFit <- function(object, point.est = "mean", ...) {
     dplyr::arrange(index)
 
   if(!is.null(object$vnames)) res <- res %>% group_by(index) %>% mutate(source = object$vnames, .after = variable)
-  if(!is.null(object$t)) {
-
-  }
+  if(!is.null(object$t)) res <- res %>% group_by(variable) %>% mutate(t = object$t, .after = index) %>% select(-index)
 
   return(as.data.frame(res))
 }
