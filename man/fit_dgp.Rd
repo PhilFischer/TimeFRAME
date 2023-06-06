@@ -12,6 +12,7 @@ fit_dgp(
   eta = 0,
   rho = 0.3,
   rho.r = 0.6,
+  estim.rho = FALSE,
   iter = 2000,
   cores = 1,
   chains = 4
@@ -31,6 +32,8 @@ fit_dgp(
 \item{rho}{Numeric, scaled correlation length for source contributions (Default 0.3).}
 
 \item{rho.r}{Numeric, scaled correlation length for fractionation (Default 0.6).}
+
+\item{estim.rho}{Logical, if TRUE then correlation length is fitted via hierarchical model (Default FALSE).}
 
 \item{iter}{Numeric, number of sampler iterations (Default 2000).}
 

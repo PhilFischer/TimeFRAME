@@ -40,6 +40,17 @@ d.weights <- data.frame(t = t) %>%
 sources <- n2o_sources[1:2,c(1,2,4,5)]  # only 2 sources with 2 measurements
 frac <- n2o_frac[,c(1,2,4,5)]  # only 2 measurements
 model <- frame_model(sources, frac = frac)
+
+d.weights %>%
+  pivot_longer(-t, names_to = "source") %>%
+  mutate(source = factor(source, levels = names(d.weights)[2:4])) %>%
+  ggplot() +
+  geom_line(aes(x = t, y = value, col = source), linewidth = 1) +
+  ylim(0, 1) +
+  facet_grid(source ~ .) +
+  xlab("Source") + ylab("Source Contribution and Fractionation Weight") +
+  labs(col = "Time", title = "Fixed Values for f and r") +
+  theme_bw()
 ```
 
 
@@ -54,7 +65,7 @@ d.meas <- sample_measurements(model, d.weights[,-1], eta) %>%
   as.data.frame() %>%
   add_column(t = d.weights$t, .before = 1)
 
-d.meas
+autoplot(model, d.meas[,2:3])
 ```
 
 
@@ -102,6 +113,12 @@ as.data.frame(fit)
 ```
 
 
+```{r}
+autoplot(fit)
+```
+
+
+
 # Time Series Inference
 
 ```{r}
@@ -137,27 +154,8 @@ coef(fit.frame)
 
 
 ```{r}
-as.data.frame(fit.frame) %>%
-  inner_join(d.weights %>%
-               pivot_longer(-t, names_to = "variable"),
-             by = c("t", "source" = "variable")) %>%
-  ggplot() +
-  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
-  geom_line(aes(x = t, y = value, group = source)) +
-  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
-  ylim(0, 1) +
-  facet_grid(source ~ .) +
-  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
-  labs(col = "Source", title = "Independent FRAME Model") +
-  guides(fill = "none") +
-  theme_bw()
+autoplot(fit.frame)
 ```
-
-
-```{r}
-summary.FrameFit(fit.frame)
-class(fit.frame)
-``` 
 
 
 
@@ -169,20 +167,7 @@ system.time({ fit.glm <- fit_glm(model, meas, t = t, eta = eta) })
 
 
 ```{r}
-as.data.frame(fit.glm) %>%
-  inner_join(d.weights %>%
-               pivot_longer(-t, names_to = "variable"),
-             by = c("t", "source" = "variable")) %>%
-  ggplot() +
-  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
-  geom_line(aes(x = t, y = value, group = source)) +
-  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
-  ylim(0, 1) +
-  facet_grid(source ~ .) +
-  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
-  labs(col = "Source", title = "Spline GLM Model") +
-  guides(fill = "none") +
-  theme_bw()
+autoplot(fit.glm)
 ```
 
 
@@ -195,20 +180,7 @@ system.time({ fit.gp <- fit_gp(model, meas, t = t, eta = eta, iter = 2000, cores
 
 
 ```{r}
-as.data.frame(fit.gp) %>%
-  inner_join(d.weights %>%
-               pivot_longer(-t, names_to = "variable"),
-             by = c("t", "source" = "variable")) %>%
-  ggplot() +
-  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
-  geom_line(aes(x = t, y = value, group = source)) +
-  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
-  ylim(0, 1) +
-  facet_grid(source ~ .) +
-  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
-  labs(col = "Source", title = "GP Model") +
-  guides(fill = "none") +
-  theme_bw()
+autoplot(fit.gp)
 ```
 
 
@@ -221,20 +193,7 @@ system.time({ fit.dgp <- fit_dgp(model, meas, t = t, eta = eta, iter = 2000, cor
 
 
 ```{r}
-as.data.frame(fit.dgp) %>%
-  inner_join(d.weights %>%
-               pivot_longer(-t, names_to = "variable"),
-             by = c("t", "source" = "variable")) %>%
-  ggplot() +
-  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
-  geom_line(aes(x = t, y = value, group = source)) +
-  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
-  ylim(0, 1) +
-  facet_grid(source ~ .) +
-  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
-  labs(col = "Source", title = "DGP Model") +
-  guides(fill = "none") +
-  theme_bw()
+autoplot(fit.dgp)
 ```
 
 
@@ -247,20 +206,7 @@ system.time({ fit.hdgp <- fit_dgp(model, meas, t = t, eta = eta, estim.rho = TRU
 
 
 ```{r}
-as.data.frame(fit.hdgp) %>%
-  inner_join(d.weights %>%
-               pivot_longer(-t, names_to = "variable"),
-             by = c("t", "source" = "variable")) %>%
-  ggplot() +
-  geom_ribbon(aes(x = t, ymin = `2.5%`, ymax = `97.5%`, fill = source), alpha = 0.4) +
-  geom_line(aes(x = t, y = value, group = source)) +
-  geom_line(aes(x = t, y = mean, col = source), linewidth = 1) +
-  ylim(0, 1) +
-  facet_grid(source ~ .) +
-  xlab("Time") + ylab("Source Contribution and Fractionation Weight") + 
-  labs(col = "Source", title = "DGP Model") +
-  guides(fill = "none") +
-  theme_bw()
+autoplot(fit.hdgp)
 ```
 
 

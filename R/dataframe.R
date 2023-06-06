@@ -21,14 +21,14 @@ as.data.frame.FrameFit <- function(object, ...) {
     dplyr::select(-pattern) %>%
     dplyr::arrange(index)
 
-  if(!is.null(object$vnames)) res <- res %>% group_by(index) %>% mutate(source = object$vnames, .after = variable)
+  if(!is.null(object$vnames)) res <- res %>% group_by(index) %>% mutate(source = factor(object$vnames, levels = object$vnames), .after = variable)
   if(!is.null(object$t)) res <- res %>% group_by(variable) %>% mutate(t = object$t, .after = index) %>% select(-index)
 
   return(as.data.frame(res))
 }
 
 
-as.data.frame.FrameFit.stationary <- function(object, point.est = "mean", ...) {
+as.data.frame.FrameFit.stationary <- function(object, ...) {
   res <- rstan::summary(object$stanfit)$summary %>%
     as.data.frame() %>%
     tibble::rownames_to_column(var = "variable") %>%
@@ -36,7 +36,7 @@ as.data.frame.FrameFit.stationary <- function(object, point.est = "mean", ...) {
     dplyr::mutate(variable = stringr::str_replace(variable, "([a-zA-Z]+)\\[([0-9]+)\\]", "\\1\\2")) %>%
     tidyr::separate(variable, c("variable"), sep = "-")
 
-  if(!is.null(object$vnames)) res <- res %>% mutate(source = object$vnames, .after = variable)
+  if(!is.null(object$vnames)) res <- res %>% mutate(source = factor(object$vnames, levels = object$vnames), .after = variable)
 
   return(res)
 }

@@ -6,6 +6,7 @@
 #' @name TimeFRAME-package
 #' @aliases TimeFRAME
 #' @useDynLib TimeFRAME, .registration = TRUE
+#' @importFrom ggplot2 autoplot
 #' @import methods
 #' @import Rcpp
 #' @import rstan
