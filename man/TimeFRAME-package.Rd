@@ -6,7 +6,7 @@
 \alias{TimeFRAME}
 \title{The 'TimeFRAME' package.}
 \description{
-A DESCRIPTION OF THE PACKAGE
+TimeFRAME is a data analysis package that can be used for Bayesian estimation of source contributions and fractionation of isotopic measurement time series. It uses Bayesian parameter estimation with Stan to estimate uncertainty and produce posterior samples. Additionally, the package provides utility functions to simulate measurements and isotopic signature data for the study of nitrous oxide.
 }
 \references{
 Stan Development Team (2023). RStan: the R interface to Stan. R package version 2.21.8. https://mc-stan.org
