@@ -2,15 +2,18 @@
 % Please edit documentation in R/isotope_map.R
 \name{param_map}
 \alias{param_map}
-\title{Computes measurement means from a vector or data frame of source contribution and fractionation parameters}
+\title{Computes measurement means from source contribution and fractionation weights}
 \usage{
 param_map(model, f)
 }
 \arguments{
-\item{model}{Object of type FrameModel}
+\item{model}{an object of type \code{FrameModel}.}
 
-\item{f}{Data frame of \code{K+L} columns corresponding to source contributions and fractionation}
+\item{f}{either a vector with \eqn{K+L} components or a data frame with \eqn{K+L} columns corresponding to source contributions and fractionation.}
 }
 \description{
-Computes measurement means from a vector or data frame of source contribution and fractionation parameters
+Accepts a vector or data frame of parameters corresponding to source contribution and fractionation weights. The regular mixing equation is used to compute the mean measurement value over source and fractionation means.
+}
+\details{
+See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/frame_model.R
 \name{frame_model}
 \alias{frame_model}
-\title{Create FRAME model specification}
+\title{Create model specification}
 \usage{
 frame_model(sources, frac = data.frame())
 }
@@ -13,5 +13,13 @@ frame_model(sources, frac = data.frame())
 the first \eqn{L} corresponding to fractionation factor means and the next \eqn{L} corresponding to their standard deviations.}
 }
 \description{
-Create FRAME model specification using source data and optionally fractionation data to be used for model fitting.
+Create \code{FrameModel} specification using source data and optionally fractionation data to be used for model fitting.
+}
+\details{
+The following dimensions are defined and must be adhered to for functions using a \code{FrameModel}:
+\itemize{
+\item \eqn{d} number of isotopic measurements
+\item \eqn{K} number of sources that contribute to the mixture
+\item \eqn{L} number of fractionation effects to consider
+}
 }

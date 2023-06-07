@@ -1,8 +1,11 @@
-#' Plot FrameFit object using ggplot2
+#' Plot `FrameFit` object using `ggplot2`
+#'
+#' @description
+#' Plots the model results in objects of type `FrameFit` using `ggplot2`. Stationary models use a simple median estimate per source and line ranges for credible intervals, whereas time series models plot the mean per source over time with a ribbon for the credible interval.
 #'
 #' @export
-#' @param object an object of type FrameFit.
-#' @param ... Other arguments.
+#' @param object an object of type `FrameFit`.
+#' @param ... other arguments.
 autoplot.FrameFit <- function(object, ...) {
   if(class(object)[1] != "FrameFit") stop("Object must be of type FrameFit.")
 

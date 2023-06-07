@@ -175,7 +175,7 @@ autoplot(fit.glm)
 ## Gaussian Process Model
 
 ```{r}
-system.time({ fit.gp <- fit_gp(model, meas, t = t, eta = eta, iter = 2000, cores = 4, chains = 4) })
+system.time({ fit.gp <- fit_gp(model, meas, t = t, eta = eta, iter = 2000) })
 ```
 
 
@@ -188,7 +188,7 @@ autoplot(fit.gp)
 ## Dirichlet-Gaussian Process Model
 
 ```{r}
-system.time({ fit.dgp <- fit_dgp(model, meas, t = t, eta = eta, iter = 2000, cores = 4, chains = 4) })
+system.time({ fit.dgp <- fit_dgp(model, meas, t = t, eta = eta, iter = 2000) })
 ```
 
 
@@ -201,7 +201,7 @@ autoplot(fit.dgp)
 ## Hierarchical Dirichlet-Gaussian Process Model
 
 ```{r}
-system.time({ fit.hdgp <- fit_dgp(model, meas, t = t, eta = eta, estim.rho = TRUE, iter = 2000, cores = 4, chains = 4) })
+system.time({ fit.hdgp <- fit_dgp(model, meas, t = t, eta = eta, estim.rho = TRUE, iter = 2000) })
 ```
 
 

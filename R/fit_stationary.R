@@ -1,10 +1,17 @@
 #' Fit stationary FRAME model
 #'
+#' @description
+#' Fits a Bayesian model for parameter estimation assuming the measurements are from a stationary scenario. Results thus contain only one estimate per parameter regardless of how many measurements are present.
+#'
 #' @export
-#' @param model an object of type FrameModel.
-#' @param x a data frame corresponding to isotopic measurements.
-#' @param eta numeric or vector, measurement noise magnitude.
-#' @param iter integer, number of sampler iterations (Default 2000)
+#' @param model an object of type `FrameModel`.
+#' @param x a data frame with \eqn{d} columns corresponding to isotopic measurements.
+#' @param eta numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement.
+#' @param iter integer, number of sampler iterations (Default 2000).
+#'
+#' @details
+#' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+#'
 fit_stationary <- function(model, x, eta, iter = 2000) {
   if(ncol(x) != model$dims$d) stop(sprintf("Argument x has the wrong number of columns. Found %s, but %s expected.", ncol(x), model$d))
   if(is.vector(eta) && (length(eta) != 1) && (length(eta) != model$dims$d)) stop(sprintf("Argument eta has wrong length. Found %s, but %s expected.", length(eta), model$dims$d))

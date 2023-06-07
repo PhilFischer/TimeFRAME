@@ -10,4 +10,6 @@ A DESCRIPTION OF THE PACKAGE
 }
 \references{
 Stan Development Team (2023). RStan: the R interface to Stan. R package version 2.21.8. https://mc-stan.org
+
+L. Yu, E. Harris, D. Lewicka-Szczebak, et al., “What can we learn from N2O isotope data? – analytics, processes and modelling,” Rapid Communications in Mass Spectrometry, vol. 34, no. 20, Aug. 2020. \url{https://doi.org/10.1002/rcm.8858}
 }

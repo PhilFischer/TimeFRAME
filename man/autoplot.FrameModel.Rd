@@ -2,7 +2,7 @@
 % Please edit documentation in R/frame_model.R
 \name{autoplot.FrameModel}
 \alias{autoplot.FrameModel}
-\title{Plot FRAME model using ggplot2}
+\title{Plot \code{FrameModel} using ggplot2}
 \usage{
 \method{autoplot}{FrameModel}(model, x = NULL, ...)
 }
@@ -12,5 +12,5 @@
 \item{x}{data matrix of isotopic measurements (Default NULL).}
 }
 \description{
-Plot FRAME model using ggplot2
+Plot an object of type \code{FrameModel} using ggplot2. Dual isotope plots will be generated and if more than 2 measurement dimensions are present a list of plots will be returned.
 }

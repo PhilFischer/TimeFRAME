@@ -4,21 +4,37 @@
 \alias{fit_frame}
 \title{Fit independent time step model}
 \usage{
-fit_frame(model, x, t = NULL, sd = data.frame(), eta = 0, iter = 2000)
+fit_frame(
+  model,
+  x,
+  t = NULL,
+  sd = data.frame(),
+  eta = 0,
+  iter = 2000,
+  cores = 1,
+  chains = 4
+)
 }
 \arguments{
-\item{model}{Object of type FrameModel.}
+\item{model}{an object of type \code{FrameModel}.}
 
-\item{x}{Data frame corresponding to isotopic measurements.}
+\item{x}{data frame with \eqn{d} columns corresponding to isotopic measurements.}
 
-\item{t}{Vector of time points (Default NULL).}
+\item{t}{vector corresponding to scaled time points with same length as data frame \code{x} (Default NULL).}
 
-\item{sd}{Data frame corresponding to measurement errors (Default empty data.frame).}
+\item{sd}{data frame corresponding to measurement errors with same shape as \code{x} (Default empty data.frame).}
 
-\item{eta}{numeric or vector, measurement noise magnitude (Default 0).}
+\item{eta}{numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement (Default 0).}
 
-\item{iter}{Numeric, number of sampler iterations (Default 2000).}
+\item{iter}{integer, number of sampler iterations (Default 2000).}
+
+\item{cores}{integer, number of cores to use (Default = 1).}
+
+\item{chains}{integer, number of chains to use (Default = 4).}
 }
 \description{
-Fit independent time step model
+Fit a time series model using FRAME at each point in time independently.
+}
+\details{
+See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }

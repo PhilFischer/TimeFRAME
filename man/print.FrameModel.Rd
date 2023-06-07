@@ -2,7 +2,7 @@
 % Please edit documentation in R/frame_model.R
 \name{print.FrameModel}
 \alias{print.FrameModel}
-\title{Print FRAME model}
+\title{Print \code{FrameModel}}
 \usage{
 \method{print}{FrameModel}(x, ...)
 }

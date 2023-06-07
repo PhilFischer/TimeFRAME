@@ -1,9 +1,12 @@
-#' Extract results from FrameFit object
+#' Extract coefficient estimates from `FrameFit` object
+#'
+#' @description
+#' Extracts point estimates based on posterior means or medians from object of type `FrameFit`.
 #'
 #' @export
-#' @param object an object of type FrameFit.
+#' @param object an object of type `FrameFit`.
 #' @param point.est string, type of point estimate to compute. One of "mean|median" (Default "mean").
-#' @param ... Other arguments.
+#' @param ... other arguments.
 coef.FrameFit <- function(object, point.est = "mean", ...) {
   if(class(object)[1] != "FrameFit") stop("Object must be of type FrameFit.")
 

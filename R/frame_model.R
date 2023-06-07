@@ -1,10 +1,19 @@
-#' Create FRAME model specification
+#' Create model specification
 #'
-#' @description Create FRAME model specification using source data and optionally fractionation data to be used for model fitting.
+#' @description
+#' Create `FrameModel` specification using source data and optionally fractionation data to be used for model fitting.
+#'
+#' @export
 #' @param sources data frame with \eqn{d} columns corresponding to isotopic measurement dimensions and \eqn{2K} rows, the first \eqn{K} corresponding to source locations and the next \eqn{K} corresponding to source spreads.
 #' @param frac data frame with \eqn{d} columns corresponding to isotopic measurement dimensions and \eqn{2L} rows,
 #' the first \eqn{L} corresponding to fractionation factor means and the next \eqn{L} corresponding to their standard deviations.
-#' @export
+#'
+#' @details
+#' The following dimensions are defined and must be adhered to for functions using a `FrameModel`:
+#' * \eqn{d} number of isotopic measurements
+#' * \eqn{K} number of sources that contribute to the mixture
+#' * \eqn{L} number of fractionation effects to consider
+#'
 frame_model <- function(sources, frac = data.frame()) {
   if(ncol(sources) %% 2 != 0) stop("Parameter sources must have an even number of columns, the first half corresponding to locations and the rest to spreads.")
   d <- ncol(sources) / 2
@@ -25,7 +34,7 @@ frame_model <- function(sources, frac = data.frame()) {
 }
 
 
-#' Print FRAME model
+#' Print `FrameModel`
 #'
 #' @export
 #' @description Print an object of type FrameModel.
@@ -42,9 +51,10 @@ print.FrameModel <- function(x, ...) {
 }
 
 
-#' Plot FRAME model using ggplot2
+#' Plot `FrameModel` using ggplot2
 #'
 #' @export
+#' @description Plot an object of type `FrameModel` using ggplot2. Dual isotope plots will be generated and if more than 2 measurement dimensions are present a list of plots will be returned.
 #' @param model an object of type FrameModel.
 #' @param x data matrix of isotopic measurements (Default NULL).
 autoplot.FrameModel <- function(model, x = NULL, ...) {

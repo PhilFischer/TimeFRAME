@@ -1,13 +1,22 @@
 #' Fit independent time step model
 #'
+#' @description
+#' Fit a time series model using FRAME at each point in time independently.
+#'
 #' @export
-#' @param model Object of type FrameModel.
-#' @param x Data frame corresponding to isotopic measurements.
-#' @param t Vector of time points (Default NULL).
-#' @param sd Data frame corresponding to measurement errors (Default empty data.frame).
-#' @param eta numeric or vector, measurement noise magnitude (Default 0).
-#' @param iter Numeric, number of sampler iterations (Default 2000).
-fit_frame <- function(model, x, t = NULL, sd = data.frame(), eta = 0, iter = 2000) {
+#' @param model an object of type `FrameModel`.
+#' @param x data frame with \eqn{d} columns corresponding to isotopic measurements.
+#' @param t vector corresponding to scaled time points with same length as data frame `x` (Default NULL).
+#' @param sd data frame corresponding to measurement errors with same shape as `x` (Default empty data.frame).
+#' @param eta numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement (Default 0).
+#' @param iter integer, number of sampler iterations (Default 2000).
+#' @param cores integer, number of cores to use (Default = 1).
+#' @param chains integer, number of chains to use (Default = 4).
+#'
+#' @details
+#' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+#'
+fit_frame <- function(model, x, t = NULL, sd = data.frame(), eta = 0, iter = 2000, cores = 1, chains = 4) {
   if(nrow(sd) == 0) sd <- matrix(0, nrow = nrow(x), ncol = ncol(x))
   else if(nrow(sd) != nrow(x) && ncol(sd) != ncol(x)) stop("Matrix of data and sd must have the same size, found ", dim(data), " and ", dim(sd))
   if((length(eta) != 1) && (length(eta) != model$dims$d)) stop(sprintf("Argument eta has wrong length. Found %s, but %s expected.", length(eta), model$dims$d))
@@ -28,7 +37,7 @@ fit_frame <- function(model, x, t = NULL, sd = data.frame(), eta = 0, iter = 200
     alpha = 1,
     alpha_r = 1
   ),
-  iter = iter, refresh = 0, pars = c("f", "r", "S", "A", "mu"))
+  iter = iter, refresh = 0, cores = cores, chains = chains, pars = c("f", "r", "S", "A", "mu"))
 
   model$stanfit <- fit
   model$data <- x

@@ -1,8 +1,14 @@
-#' Extract summary stats from FrameFit object
+#' Extract summary statistics of `FrameFit` object as data frame.
+#'
+#' @description
+#' Collects summary statistics from the `FrameFit` object and arranges them in a data frame.
 #'
 #' @export
-#' @param object an object of type FrameFit.
-#' @param ... Other arguments.
+#' @param object an object of type `FrameFit`.
+#' @param ... other arguments.
+#'
+#' @returns Data frame having a column `variable` for the variable description names, `index` if no time points were supplied or `t` with time points, `mean` for the posterior means, `se_mean` indicating estimation error based on effective sample size, `sd` for posterior standard deviation, a list of quantiles including the median 50% quantile, `n_eff` with effective sample sizes according to the Stan documentation, and `Rhat` the Gelman-Rubin statistic according to the Stan documentation.
+#'
 as.data.frame.FrameFit <- function(object, ...) {
   if(class(object)[1] != "FrameFit") stop("Object must be of type FrameFit.")
 

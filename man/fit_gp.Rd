@@ -17,24 +17,27 @@ fit_gp(
 )
 }
 \arguments{
-\item{model}{Object of type FrameModel.}
+\item{model}{an object of type \code{FrameModel}.}
 
-\item{x}{Data frame corresponding to isotopic measurements.}
+\item{x}{data frame with \eqn{d} columns corresponding to isotopic measurements.}
 
-\item{t}{Vector corresponding to time points.}
+\item{t}{vector corresponding to scaled time points with same length as data frame \code{x}.}
 
-\item{sd}{Data frame corresponding to measurement errors (Default empty data.frame).}
+\item{sd}{data frame corresponding to measurement errors with same shape as \code{x} (Default empty data.frame).}
 
-\item{eta}{numeric or vector, measurement noise magnitude (Default 0).}
+\item{eta}{numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement (Default 0).}
 
-\item{rho}{Numeric, scaled correlation length for Gaussian process (Default 0.5).}
+\item{rho}{numeric, scaled correlation length for Gaussian process (Default 0.5).}
 
-\item{iter}{Integer, number of sampler iterations (Default 2000).}
+\item{iter}{integer, number of sampler iterations (Default 2000).}
 
-\item{cores}{Integer, number of cores to use (Default = 1).}
+\item{cores}{integer, number of cores to use (Default = 1).}
 
-\item{chains}{Integer, number of chains to use (Default = 4).}
+\item{chains}{integer, number of chains to use (Default = 4).}
 }
 \description{
-Fit Gaussian process prior on measurements
+Fit time series model using Gaussian process priors on measurements and otherwise fitting source contribution and fractionation weights independently.
+}
+\details{
+See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }

@@ -1,8 +1,15 @@
-#' Computes measurement means from a vector or data frame of source contribution and fractionation parameters
+#' Computes measurement means from source contribution and fractionation weights
+#'
+#' @description
+#' Accepts a vector or data frame of parameters corresponding to source contribution and fractionation weights. The regular mixing equation is used to compute the mean measurement value over source and fractionation means.
 #'
 #' @export
-#' @param model Object of type FrameModel
-#' @param f Data frame of `K+L` columns corresponding to source contributions and fractionation
+#' @param model an object of type `FrameModel`.
+#' @param f either a vector with \eqn{K+L} components or a data frame with \eqn{K+L} columns corresponding to source contributions and fractionation.
+#'
+#' @details
+#' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+#'
 param_map <- function(model, f) {
   if(!inherits(model, "FrameModel")) stop("Parameter model is not of type FrameModel.")
 
@@ -54,10 +61,17 @@ param_map <- function(model, f) {
 
 #' Sample isotopic measurements from true parameter values
 #'
+#' @description
+#' Uses distributions of source isotopic signature and fractionation factor in object of type `FrameModel` to sample parameters and then simulates measurements from them using noise defined in `eta`.
+#'
 #' @export
-#' @param model an object of type FrameModel.
-#' @param f a data frame containing true parameter values.
-#' @param eta numeric or vector, measurement noise overall or per isotopic measurement.
+#' @param model an object of type `FrameModel`.
+#' @param f vector with \eqn{K+L} components or data frame with \eqn{K+L} columns containing true parameter values.
+#' @param eta numeric or vector of length \eqn{d}, measurement noise overall or per isotopic measurement.
+#'
+#' @details
+#' See [frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+#'
 sample_measurements <- function(model, f, eta) {
   if(!inherits(model, "FrameModel")) stop("Parameter model is not of type FrameModel.")
 
@@ -115,11 +129,18 @@ sample_measurements <- function(model, f, eta) {
 }
 
 
-#' Isotope Mapping computes the source contribution and fractionation weights as the solution to a linear system of equations.
+#' Solve for source contributions and fractionation via isotope mapping
+#'
+#' @description
+#' Isotope Mapping computes the source contribution and fractionation weights as the solution to a linear system of equations. In certain cases where no solution exists due to geometric constraints the function will return unconstrained estimates and throw a warning and if no unconstrained solution exists due to collinearity there will be an error.
 #'
 #' @export
-#' @param model Object of type FrameModel
-#' @param x Data frame of `d` columns corresponding to isotopic measurements
+#' @param model an bject of type `FrameModel`.
+#' @param x vector with \eqn{d} components or data frame with \eqn{d} columns corresponding to isotopic measurements.
+#'
+#' @details
+#' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+#'
 isotope_map <- function(model, x) {
   if(!inherits(model, "FrameModel")) stop("Parameter model is not of type FrameModel.")
 

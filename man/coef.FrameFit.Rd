@@ -2,17 +2,17 @@
 % Please edit documentation in R/coef.R
 \name{coef.FrameFit}
 \alias{coef.FrameFit}
-\title{Extract results from FrameFit object}
+\title{Extract coefficient estimates from \code{FrameFit} object}
 \usage{
 \method{coef}{FrameFit}(object, point.est = "mean", ...)
 }
 \arguments{
-\item{object}{an object of type FrameFit.}
+\item{object}{an object of type \code{FrameFit}.}
 
 \item{point.est}{string, type of point estimate to compute. One of "mean|median" (Default "mean").}
 
-\item{...}{Other arguments.}
+\item{...}{other arguments.}
 }
 \description{
-Extract results from FrameFit object
+Extracts point estimates based on posterior means or medians from object of type \code{FrameFit}.
 }

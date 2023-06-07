@@ -7,12 +7,15 @@
 sample_measurements(model, f, eta)
 }
 \arguments{
-\item{model}{an object of type FrameModel.}
+\item{model}{an object of type \code{FrameModel}.}
 
-\item{f}{a data frame containing true parameter values.}
+\item{f}{vector with \eqn{K+L} components or data frame with \eqn{K+L} columns containing true parameter values.}
 
-\item{eta}{numeric or vector, measurement noise overall or per isotopic measurement.}
+\item{eta}{numeric or vector of length \eqn{d}, measurement noise overall or per isotopic measurement.}
 }
 \description{
-Sample isotopic measurements from true parameter values
+Uses distributions of source isotopic signature and fractionation factor in object of type \code{FrameModel} to sample parameters and then simulates measurements from them using noise defined in \code{eta}.
+}
+\details{
+See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }

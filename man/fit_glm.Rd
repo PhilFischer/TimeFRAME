@@ -4,25 +4,43 @@
 \alias{fit_glm}
 \title{Fit generalized linear model model with spline bases}
 \usage{
-fit_glm(model, x, t, sd = data.frame(), eta = 0, M = 8, M.r = 4, iter = 2000)
+fit_glm(
+  model,
+  x,
+  t,
+  sd = data.frame(),
+  eta = 0,
+  M = 8,
+  M.r = 4,
+  iter = 2000,
+  cores = 1,
+  chains = 4
+)
 }
 \arguments{
-\item{model}{Object of type FrameModel.}
+\item{model}{an object of type \code{FrameModel}.}
 
-\item{x}{Data frame corresponding to isotopic measurements.}
+\item{x}{data frame with \eqn{d} columns corresponding to isotopic measurements.}
 
-\item{t}{Vector corresponding to time steps.}
+\item{t}{vector corresponding to scaled time points with same length as data frame \code{x}.}
 
-\item{sd}{Data frame corresponding to measurement errors (Default empty data.frame).}
+\item{sd}{data frame corresponding to measurement errors with same shape as \code{x} (Default empty data.frame).}
 
-\item{eta}{numeric or vector, measurement noise magnitude (Default 0).}
+\item{eta}{numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement (Default 0).}
 
-\item{M}{Integer, number of degrees of freedom for source contributions (Default 8).}
+\item{M}{integer, number of degrees of freedom for source contributions (Default 8).}
 
-\item{M.r}{Integer, number of degrees of freedom for fractionation (Default 4).}
+\item{M.r}{integer, number of degrees of freedom for fractionation (Default 4).}
 
-\item{iter}{Numeric, number of sampler iterations.}
+\item{iter}{integer, number of sampler iterations (Default 2000).}
+
+\item{cores}{integer, number of cores to use (Default = 1).}
+
+\item{chains}{integer, number of chains to use (Default = 4).}
 }
 \description{
-Fit generalized linear model model with spline bases
+Fit time series model using a generalzed linear model structure with time series points expanded in natural cubic spline bases.
+}
+\details{
+See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }

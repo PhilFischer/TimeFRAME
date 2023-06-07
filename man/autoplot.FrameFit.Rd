@@ -2,15 +2,15 @@
 % Please edit documentation in R/autoplot.R
 \name{autoplot.FrameFit}
 \alias{autoplot.FrameFit}
-\title{Plot FrameFit object using ggplot2}
+\title{Plot \code{FrameFit} object using \code{ggplot2}}
 \usage{
 \method{autoplot}{FrameFit}(object, ...)
 }
 \arguments{
-\item{object}{an object of type FrameFit.}
+\item{object}{an object of type \code{FrameFit}.}
 
-\item{...}{Other arguments.}
+\item{...}{other arguments.}
 }
 \description{
-Plot FrameFit object using ggplot2
+Plots the model results in objects of type \code{FrameFit} using \code{ggplot2}. Stationary models use a simple median estimate per source and line ranges for credible intervals, whereas time series models plot the mean per source over time with a ribbon for the credible interval.
 }

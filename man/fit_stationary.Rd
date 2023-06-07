@@ -7,14 +7,17 @@
 fit_stationary(model, x, eta, iter = 2000)
 }
 \arguments{
-\item{model}{an object of type FrameModel.}
+\item{model}{an object of type \code{FrameModel}.}
 
-\item{x}{a data frame corresponding to isotopic measurements.}
+\item{x}{a data frame with \eqn{d} columns corresponding to isotopic measurements.}
 
-\item{eta}{numeric or vector, measurement noise magnitude.}
+\item{eta}{numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement.}
 
-\item{iter}{integer, number of sampler iterations (Default 2000)}
+\item{iter}{integer, number of sampler iterations (Default 2000).}
 }
 \description{
-Fit stationary FRAME model
+Fits a Bayesian model for parameter estimation assuming the measurements are from a stationary scenario. Results thus contain only one estimate per parameter regardless of how many measurements are present.
+}
+\details{
+See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }

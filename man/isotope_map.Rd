@@ -2,15 +2,18 @@
 % Please edit documentation in R/isotope_map.R
 \name{isotope_map}
 \alias{isotope_map}
-\title{Isotope Mapping computes the source contribution and fractionation weights as the solution to a linear system of equations.}
+\title{Solve for source contributions and fractionation via isotope mapping}
 \usage{
 isotope_map(model, x)
 }
 \arguments{
-\item{model}{Object of type FrameModel}
+\item{model}{an bject of type \code{FrameModel}.}
 
-\item{x}{Data frame of \code{d} columns corresponding to isotopic measurements}
+\item{x}{vector with \eqn{d} components or data frame with \eqn{d} columns corresponding to isotopic measurements.}
 }
 \description{
-Isotope Mapping computes the source contribution and fractionation weights as the solution to a linear system of equations.
+Isotope Mapping computes the source contribution and fractionation weights as the solution to a linear system of equations. In certain cases where no solution exists due to geometric constraints the function will return unconstrained estimates and throw a warning and if no unconstrained solution exists due to collinearity there will be an error.
+}
+\details{
+See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }

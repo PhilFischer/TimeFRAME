@@ -2,15 +2,18 @@
 % Please edit documentation in R/dataframe.R
 \name{as.data.frame.FrameFit}
 \alias{as.data.frame.FrameFit}
-\title{Extract summary stats from FrameFit object}
+\title{Extract summary statistics of \code{FrameFit} object as data frame.}
 \usage{
 \method{as.data.frame}{FrameFit}(object, ...)
 }
 \arguments{
-\item{object}{an object of type FrameFit.}
+\item{object}{an object of type \code{FrameFit}.}
 
-\item{...}{Other arguments.}
+\item{...}{other arguments.}
+}
+\value{
+Data frame having a column \code{variable} for the variable description names, \code{index} if no time points were supplied or \code{t} with time points, \code{mean} for the posterior means, \code{se_mean} indicating estimation error based on effective sample size, \code{sd} for posterior standard deviation, a list of quantiles including the median 50\% quantile, \code{n_eff} with effective sample sizes according to the Stan documentation, and \code{Rhat} the Gelman-Rubin statistic according to the Stan documentation.
 }
 \description{
-Extract summary stats from FrameFit object
+Collects summary statistics from the \code{FrameFit} object and arranges them in a data frame.
 }
