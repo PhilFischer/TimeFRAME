@@ -2,7 +2,7 @@
 > R package for the analysis of isotopic time series data using Bayesian hierarchical models implemented in Stan.
 
 ## Installation
-Make sure R is updated and install TimeFRAME using the R console.
+Make sure R is updated and install TimeFRAME using the R console. On Windows [RTools](https://cran.r-project.org/bin/windows/Rtools/) will additionally be required.
 ```
 if (!require("devtools")) install.packages("devtools") 
 devtools::install_github("PhilFischer/TimeFRAME")
