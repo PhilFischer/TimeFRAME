@@ -55,7 +55,7 @@ fit.hdgp <- fit_dgp(model, df, t = t, rho = 0.2, rho.r = 0.5, estim.rho = TRUE)
 ## References
 
 Original FRAME Model
-> M. P. Lewicki, D. Lewicka-Szczebak, and G. Skrzypek, “FRAME—monte carlo model for evaluation of the stable isotope mixing and fractionation,” PLOS ONE, vol. 17, no. 11, V. Kovtun, Ed., e0277204, Nov. 2022. doi: 10.1371/journal.pone.0277204.
+> M. P. Lewicki, D. Lewicka-Szczebak, and G. Skrzypek, “FRAME—monte carlo model for evaluation of the stable isotope mixing and fractionation,” PLOS ONE, vol. 17, no. 11, V. Kovtun, Ed., e0277204, Nov. 2022. https://doi.org/10.1371/journal.pone.0277204.
 
 Statistical Sampling
 > Stan Development Team (2023). RStan: the R interface to Stan. R package version 2.21.8. https://mc-stan.org
