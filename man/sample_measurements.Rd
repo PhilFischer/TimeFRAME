@@ -19,3 +19,10 @@ Uses distributions of source isotopic signature and fractionation factor in obje
 \details{
 See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }
+\examples{
+model <- frame_model(n2o_sources, n2o_frac)
+df <- sample_measurements(model, n2o_weights[,-1], 5)
+
+model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+df2 <- sample_measurements(model2, n2o_weights2[,-1], 5)
+}

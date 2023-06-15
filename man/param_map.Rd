@@ -9,11 +9,18 @@ param_map(model, f)
 \arguments{
 \item{model}{an object of type \code{FrameModel}.}
 
-\item{f}{either a vector with \eqn{K+L} components or a data frame with \eqn{K+L} columns corresponding to source contributions and fractionation.}
+\item{f}{vector with \eqn{K+L} components or data frame with \eqn{K+L} columns corresponding to source contributions and fractionation.}
 }
 \description{
 Accepts a vector or data frame of parameters corresponding to source contribution and fractionation weights. The regular mixing equation is used to compute the mean measurement value over source and fractionation means.
 }
 \details{
 See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+}
+\examples{
+model <- frame_model(n2o_sources, n2o_frac)
+df <- param_map(model, n2o_weights[,-1])
+
+model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+df2 <- param_map(model2, n2o_weights2[,-1])
 }

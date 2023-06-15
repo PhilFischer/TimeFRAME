@@ -7,7 +7,7 @@
 isotope_map(model, x)
 }
 \arguments{
-\item{model}{an bject of type \code{FrameModel}.}
+\item{model}{an object of type \code{FrameModel}.}
 
 \item{x}{vector with \eqn{d} components or data frame with \eqn{d} columns corresponding to isotopic measurements.}
 }
@@ -16,4 +16,11 @@ Isotope Mapping computes the source contribution and fractionation weights as th
 }
 \details{
 See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+}
+\examples{
+model <- frame_model(n2o_sources, n2o_frac)
+df <- isotope_map(model, n2o_test[,-1])
+
+model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+df2 <- isotope_map(model2, n2o_test2[,-1])
 }
