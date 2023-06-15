@@ -5,11 +5,17 @@
 #'
 #' @export
 #' @param model an object of type `FrameModel`.
-#' @param f either a vector with \eqn{K+L} components or a data frame with \eqn{K+L} columns corresponding to source contributions and fractionation.
+#' @param f vector with \eqn{K+L} components or data frame with \eqn{K+L} columns corresponding to source contributions and fractionation.
 #'
 #' @details
 #' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 #'
+#' @examples
+#' model <- frame_model(n2o_sources, n2o_frac)
+#' df <- param_map(model, n2o_weights[,-1])
+#'
+#' model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+#' df2 <- param_map(model2, n2o_weights2[,-1])
 param_map <- function(model, f) {
   if(!inherits(model, "FrameModel")) stop("Parameter model is not of type FrameModel.")
 
@@ -28,7 +34,7 @@ param_map <- function(model, f) {
     if(ncol(f) != model$dims$K+model$dims$L) stop(sprintf("Parameter f has wrong number of columns. Found %s, but should be %s.", ncol(f), model$dims$K + model$dims$L))
 
     ff <- t(as.matrix(f[,1:model$dims$K]))
-    if(any(colSums(ff) != 1)) warning("Parameter f does not fulfill sum condition.")
+    if(!all.equal(colSums(ff), rep(1.0, ncol(ff)), tolerance = 1e-6)) warning("Parameter f does not fulfill sum condition.")
     if(model$dims$L > 0) {
       rr <- t(as.matrix(f[,(model$dims$K+1):(model$dims$K+model$dims$L)]))
     }
@@ -72,6 +78,12 @@ param_map <- function(model, f) {
 #' @details
 #' See [frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 #'
+#' @examples
+#' model <- frame_model(n2o_sources, n2o_frac)
+#' df <- sample_measurements(model, n2o_weights[,-1], 5)
+#'
+#' model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+#' df2 <- sample_measurements(model2, n2o_weights2[,-1], 5)
 sample_measurements <- function(model, f, eta) {
   if(!inherits(model, "FrameModel")) stop("Parameter model is not of type FrameModel.")
 
@@ -90,7 +102,7 @@ sample_measurements <- function(model, f, eta) {
     if(ncol(f) != model$dims$K+model$dims$L) stop(sprintf("Parameter f has wrong number of columns. Found %s, but should be %s.", ncol(f), model$dims$K + model$dims$L))
 
     ff <- t(as.matrix(f[,1:model$dims$K]))
-    if(any(colSums(ff) != 1)) warning("Parameter f does not fulfill sum condition.")
+    if(!all.equal(colSums(ff), rep(1.0, ncol(ff)), tolerance = 1e-6)) warning("Parameter f does not fulfill sum condition.")
     if(model$dims$L > 0) {
       rr <- t(as.matrix(f[,(model$dims$K+1):(model$dims$K+model$dims$L)]))
     }
@@ -135,12 +147,18 @@ sample_measurements <- function(model, f, eta) {
 #' Isotope Mapping computes the source contribution and fractionation weights as the solution to a linear system of equations. In certain cases where no solution exists due to geometric constraints the function will return unconstrained estimates and throw a warning and if no unconstrained solution exists due to collinearity there will be an error.
 #'
 #' @export
-#' @param model an bject of type `FrameModel`.
+#' @param model an object of type `FrameModel`.
 #' @param x vector with \eqn{d} components or data frame with \eqn{d} columns corresponding to isotopic measurements.
 #'
 #' @details
 #' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 #'
+#' @examples
+#' model <- frame_model(n2o_sources, n2o_frac)
+#' df <- isotope_map(model, n2o_test[,-1])
+#'
+#' model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+#' df2 <- isotope_map(model2, n2o_test2[,-1])
 isotope_map <- function(model, x) {
   if(!inherits(model, "FrameModel")) stop("Parameter model is not of type FrameModel.")
 

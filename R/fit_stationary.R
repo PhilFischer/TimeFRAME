@@ -5,13 +5,23 @@
 #'
 #' @export
 #' @param model an object of type `FrameModel`.
-#' @param x a data frame with \eqn{d} columns corresponding to isotopic measurements.
+#' @param x data frame with \eqn{d} columns corresponding to isotopic measurements.
 #' @param eta numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement.
 #' @param iter integer, number of sampler iterations (Default 2000).
 #'
 #' @details
 #' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 #'
+#' @examples
+#' # Define sources and fit the model
+#' model <- frame_model(n2o_sources, n2o_frac)
+#' fit <- fit_stationary(model, n2o_test[,-1], 5)
+#' coef(fit)
+#'
+#' # Using only 2 sources and 2 isotopic measurements
+#' model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+#' fit2 <- fit_stationary(model2, n2o_test2[,-1], 5)
+#' coef(fit2)
 fit_stationary <- function(model, x, eta, iter = 2000) {
   if(ncol(x) != model$dims$d) stop(sprintf("Argument x has the wrong number of columns. Found %s, but %s expected.", ncol(x), model$d))
   if(is.vector(eta) && (length(eta) != 1) && (length(eta) != model$dims$d)) stop(sprintf("Argument eta has wrong length. Found %s, but %s expected.", length(eta), model$dims$d))

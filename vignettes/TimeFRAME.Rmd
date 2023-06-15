@@ -9,12 +9,19 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  fig.width = 8,
+  fig.height = 5,
   collapse = TRUE,
   comment = "#>"
 )
 
 set.seed(1)
 ```
+
+
+# Dataset Simulation
+
+
 
 ```{r setup}
 library(TimeFRAME)
@@ -36,11 +43,6 @@ d.weights <- data.frame(t = t) %>%
   mutate(r1 = 0.1 + 0.1 * t) %>%
   rename(Ni = f1, bD = f2, Red = r1)
 
-# Create model class
-sources <- n2o_sources[1:2,c(1,2,4,5)]  # only 2 sources with 2 measurements
-frac <- n2o_frac[,c(1,2,4,5)]  # only 2 measurements
-model <- frame_model(sources, frac = frac)
-
 d.weights %>%
   pivot_longer(-t, names_to = "source") %>%
   mutate(source = factor(source, levels = names(d.weights)[2:4])) %>%
@@ -55,6 +57,11 @@ d.weights %>%
 
 
 ```{r}
+# Create model class
+sources <- n2o_sources[1:2,c(1,2,4,5)]  # only 2 sources with 2 measurements
+frac <- n2o_frac[,c(1,2,4,5)]  # only 2 measurements
+model <- frame_model(sources, frac = frac)
+
 # Compute measurement means
 d.mean <- param_map(model, d.weights[,-1]) %>% 
   as.data.frame() %>%
