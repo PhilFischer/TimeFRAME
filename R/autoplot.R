@@ -47,7 +47,8 @@ autoplot.FrameFit.stationary <- function(object, ...) {
     ggplot2::xlab(xlabel) + ggplot2::ylab("Source Contribution and Fractionation Weight") +
     ggplot2::labs(title = sprintf("Median, 50%% and 95%% Credible Intervals (%s)", object$model_name)) +
     ggplot2::guides(col = "none") +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "none")
 }
 
 

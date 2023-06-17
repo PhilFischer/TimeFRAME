@@ -27,11 +27,11 @@
 #'
 #' # Using only 2 sources and 2 isotopic measurements
 #' model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
-#' fit2 <- fit_dgp(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5)
+#' fit2 <- fit_dgp(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5, chains = 1)
 #' coef(fit2)
 #'
 #' # Simultaneously estimate correlation lengths
-#' fit3 <- fit_dgp(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5, estim.rho = TRUE)
+#' fit3 <- fit_dgp(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5, estim.rho = TRUE, chains = 1)
 #' coef(fit3)
 fit_dgp <- function(model, x, t, sd = data.frame(), eta = 0, rho = 0.3, rho.r = 0.6, estim.rho = FALSE, iter = 2000, cores = 1, chains = 4) {
   if(nrow(sd) == 0) sd <- matrix(0, nrow = nrow(x), ncol = ncol(x))
