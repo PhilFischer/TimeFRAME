@@ -18,7 +18,7 @@ as.data.frame.FrameFit <- function(x, row.names = NULL, optional = FALSE, ...) {
   if(x$model_name %in% c("frame", "gp")) pattern <- c(f = "\\1\\3-\\2", r = "\\1\\2-\\3")
   if(x$model_name %in% c("spline", "dgp", "hdgp")) pattern <- c(f = "\\1\\2-\\3", r = "\\1\\2-\\3")
 
-  res <- rstan::summary(x$stanfit)$summary %>%
+  res <- rstan::summary(x$stanfit, probs = c(0.025, 0.16, 0.5, 0.84, 0.975))$summary %>%
     as.data.frame() %>%
     tibble::rownames_to_column(var = "variable") %>%
     dplyr::filter(stringr::str_starts(variable, "f") | stringr::str_starts(variable, "r")) %>%
@@ -37,7 +37,7 @@ as.data.frame.FrameFit <- function(x, row.names = NULL, optional = FALSE, ...) {
 
 
 as.data.frame.FrameFit.stationary <- function(x, row.names, optional, ...) {
-  res <- rstan::summary(x$stanfit)$summary %>%
+  res <- rstan::summary(x$stanfit, probs = c(0.025, 0.16, 0.5, 0.84, 0.975))$summary %>%
     as.data.frame() %>%
     tibble::rownames_to_column(var = "variable") %>%
     dplyr::filter(stringr::str_starts(variable, "f") | stringr::str_starts(variable, "r")) %>%
