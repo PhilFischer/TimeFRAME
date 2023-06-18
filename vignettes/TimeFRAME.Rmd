@@ -9,7 +9,7 @@ vignette: >
 
 > This notebook presents an overview of the basic functionality including simulation of a data sets and application of stationary as well as time series inference models contained in the TimeFRAME package.
 
-```{r}
+```{r, include = FALSE}
 library(TimeFRAME)
 library(tibble)
 library(dplyr)
@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
   fig.width = 8,
   fig.height = 5,
   fig.align = "center",
+  out.width = "100%",
   comment = "#>"
 )
 
@@ -60,7 +61,7 @@ d.weights %>%
 ```
 
 
-In order to work with isotopic measurements a FRAME model must be defined using the function `frame_model`. Sources are extracted from the `n2o_sources` data set contained in the package by selecting only 2 sources and 2 measurements. The column indices `c(1,2,4,5)` select the first two columns for source means and the columns 4 and 5 for source spreads, which is also used for the fractionation factor. Now the model is defined with nitrification and bacterial denitrification sources considered in addition to fractionation and containing data of $\delta^{15}$N and $\delta^{15}$N$^{SP}$ measurements.
+In order to work with isotopic measurements a FRAME model must be defined using the function `frame_model`. Sources are extracted from the `n2o_sources` data set contained in the package by selecting only 2 sources and 2 measurements. The column index `c(1,2,4,5)` selects the first two columns for source means and the columns 4 and 5 for source spreads, which is also used for the fractionation factor. Now the model is defined with nitrification and bacterial denitrification sources considered in addition to fractionation and containing data of $\delta^{15}\mathrm{N}$ and $\delta^{15}\mathrm{N}^{SP}$ measurements.
 
 The expected measurement after mixing and fractionation at each point in time can be computed with the `param_map` function by specifying the FRAME model and ground truth parameters. Simulated data can be created with the `sample_measurements` function in the same way, but by additionally specifying the measurement noise $\eta$ to be used.
 
@@ -109,11 +110,11 @@ d.mean %>%
 
 # Stationary Inference
 
-Stationary inference ignores time series information and treats the data as independent and identically distributed repetitions of the same data generating process. Therefore only one single estimate for each source contribution and fractionation weights should be computed.
+Stationary inference ignores time series information and treats the data as independent and identically distributed repetitions of the same data generating process. Therefore only one single estimate for each source contribution and fractionation weight should be computed.
 
 ## Isotopic Mapping
 
-The isotopic mapping technique involves estimating source contribution and fractionation weights based on linear systems of equations. It is implemented in the function `isotope_map`. The measurement data is stripped of the time columns and averaged over time, since the function otherwise returns one value per row instead of an average.
+The isotopic mapping technique involves estimating source contribution and fractionation weights based on linear systems of equations. It is implemented in the function `isotope_map`. The measurement data is stripped of the time column and averaged over time, since the function otherwise returns one value per row instead of an average.
 
 ```{r}
 meas <- d.meas[,2:3]
@@ -121,10 +122,12 @@ isotope_map(model, colMeans(meas))
 ```
 
 
-The Bayesian version of isotopic mapping is the Fractionation and Mixing Evaluation (FRAME) technique. It estimates uncertainty from the defined model parameters and can be used with the function `fit_stationary`. For determining uncertainty it is additionally required to given an estimate of measurement uncertainty as input. Fitting the model should take only a few seconds.
+The Bayesian version of isotopic mapping is the Fractionation and Mixing Evaluation (FRAME) technique. It estimates uncertainty from the defined model parameters and can be used with the function `fit_stationary`. For determining uncertainty, it is additionally required to give an estimate of measurement uncertainty as input. Fitting the model should take only a few seconds.
 
 ```{r, warning = FALSE}
-system.time({ fit <- fit_stationary(model, meas, eta) })
+system.time(
+  fit <- fit_stationary(model, meas, eta)
+)
 ```
 
 With the function `coef`  the estimated source contribution and fractionation weights can be extracted from the model fit. They correspond to the posterior means of the parameters.
@@ -133,13 +136,13 @@ With the function `coef`  the estimated source contribution and fractionation we
 coef(fit)
 ```
 
-The full data frame with posterior means (`mean`), estimation errors (`se_mean`), standard deviations (`sd`) and quantiles (`X%`) can be extracted using the function `as.data.frame`. The effective sample size (`n_eff`) gives an indication of how reliable the estimates are with high numbers corresponding to better estimates. Generally, values above 1000 are enough and they can be increased by sampling more iterations in the fitting functions using the optional `iter` argument. The Gelman-Rubin statistic (`Rhat`) indicates issues with the model specification and should be around 1. Values above 1.1 indicate poor convergence.
+The full data frame with posterior means (`mean`), estimation errors (`se_mean`), standard deviations (`sd`) and quantiles (`X%`) can be extracted using the function `as.data.frame`. The effective sample size (`n_eff`) gives an indication of how reliable the estimates are, with high numbers corresponding to better estimates. Generally, values above 1000 are enough and they can be increased by sampling more iterations in the fitting functions using the optional `iter` argument. The Gelman-Rubin statistic (`Rhat`) indicates issues with the model specification and should be around 1. Values above 1.1 indicate poor convergence.
 
 ```{r}
 as.data.frame(fit)
 ```
 
-The `autoplot` function returns `ggplot2` objects of fitted models that can be used to visually check the estimated parameters and equally-tailed credible intervals.
+The `autoplot` function returns a `ggplot2` object of the fitted model that can be used to visually check the estimated parameters and equally-tailed credible intervals.
 
 ```{r}
 autoplot(fit)
@@ -149,9 +152,9 @@ autoplot(fit)
 
 # Time Series Inference
 
-Time series inference involves solving the mixing and fractionation at each point in time where advanced models can make assumptions about smoothness of changes and correlation. 
+Time series inference involves solving the mixing and fractionation equation at each point in time, where advanced models can make assumptions about smoothness of changes and correlation. 
 
-The isotopic mapping implementation is vectorized over time, which means that if the full data set of measurements is used it will return an estimate for each row. These estimates are then joined with the column of time points and plotted using `ggplot2` in the following cell.
+The isotopic mapping implementation is vectorized over time, which means that if the full data set of measurements is used, it will return an estimate for each row. These estimates are then joined with the column of time points and plotted using `ggplot2` in the following cell.
 
 ```{r}
 isotope_map(model, meas) %>%
@@ -171,10 +174,12 @@ isotope_map(model, meas) %>%
 
 ## Independent FRAME Model
 
-The FRAME model can be used in a non-stationary way by computing an estimate at each point in time using the function `fit_frame`. Since this model does not make use of time series information it is optional to specify the argument `t` with the time points where measurements were taken. In this notebook the number of chains is reduced to 1 for shorter execution times using the argument `chains=1`. However, it is recommended to run with at least `chains=4` for an accurate assessment of model convergence. If processors with multiple cores are available `cores=4` can be specified as well to run all chains simultaneously such that the execution time is not affected.
+The FRAME model can be used in a non-stationary way by computing an estimate at each point in time using the function `fit_frame`. Since this model does not make use of time series information, it is optional to specify the argument `t` with the time points where measurements were taken. In this notebook, the number of chains is reduced to 1 for shorter execution times using the argument `chains=1`. However, it is recommended to run with at least `chains=4` for an accurate assessment of model convergence. If processors with multiple cores are available, `cores=4` can be specified as well to run all chains simultaneously such that the execution time is not affected.
 
 ```{r}
-system.time({ fit.frame <- fit_frame(model, meas, t = t, eta = eta, chains = 1) })
+system.time(
+  fit.frame <- fit_frame(model, meas, t = t, eta = eta, chains = 1)
+)
 ```
 
 The function `coef` now returns a data frame with columns specifying the variable and corresponding source as well as time points with posterior means.
@@ -183,7 +188,7 @@ The function `coef` now returns a data frame with columns specifying the variabl
 head(coef(fit.frame))
 ```
 
-The function `as.data.frame` returns a fully normalized data frame of estimates, standard deviations, quantiles and convergence statistics for each parameter and each point in time.
+The function `as.data.frame` returns a data frame of estimates, standard deviations, quantiles and convergence statistics for each parameter and each point in time.
 
 ```{r}
 head(as.data.frame(fit.frame))
@@ -199,13 +204,15 @@ autoplot(fit.frame)
 
 ## Spline GLM Model
 
-The assumption of reducing the estimates to simple smooth functions can be accomplished using the spline GLM model implemented in the function `fit_glm`. It takes additional parameters `M` for the number of degrees of freedom in the estimate of source contribution weights and `M.r` for fractionation. Higher degrees of freedom allow for more changes and thus less smooth functions. Again, only a single chain is run with `chains=1` to reduce the execution time of this notebook, but at least `chains=4` is recommended.
+Estimates can be constrained to be smooth using the spline GLM model implemented in the function `fit_glm`. It takes additional parameters `M` for the number of degrees of freedom in the estimate of source contribution weights and `M.r` for fractionation. Higher degrees of freedom allow for more changes and thus less smooth functions. Again, only a single chain is run with `chains=1` to reduce the execution time of this notebook, but at least `chains=4` is recommended.
 
 ```{r}
-system.time({ fit.glm <- fit_glm(model, meas, t = t, eta = eta, M = 8, M.r = 4, chains = 1) })
+system.time(
+  fit.glm <- fit_glm(model, meas, t = t, eta = eta, M = 8, M.r = 4, chains = 1)
+)
 ```
 
-The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot` the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
+The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot`, the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
 
 ```{r}
 autoplot(fit.glm)
@@ -218,10 +225,12 @@ autoplot(fit.glm)
 Gaussian processes integrate a notion of smoothness by specifying correlation lengths commonly denoted by $\rho$. The implementation is available with the function `fit_gp` where the argument `rho` can be used to set the correlation length assumed for measurements. Again, only a single chain is run with `chains=1` to reduce the execution time of this notebook, but at least `chains=4` is recommended.
 
 ```{r}
-system.time({ fit.gp <- fit_gp(model, meas, t = t, eta = eta, rho = 0.2, chains = 1) })
+system.time(
+  fit.gp <- fit_gp(model, meas, t = t, eta = eta, rho = 0.2, chains = 1)
+)
 ```
 
-The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot` the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
+The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot`, the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
 
 ```{r}
 autoplot(fit.gp)
@@ -231,13 +240,15 @@ autoplot(fit.gp)
 
 ## Dirichlet-Gaussian Process Model
 
-A Dirichlet-Gaussian process is a generalization of the Gaussian process that can be applied to source contributions and fractionation directly, which gives it superior estimation properties. Similarly to regular Gaussian process models the correlation lengths must be specified, but different values are allowed for source contribution weights with the argument `rho` and for fractionation with the argument `rho.r`. Again, only a single chain is run with `chains=1` to reduce the execution time of this notebook, but at least `chains=4` is recommended.
+A Dirichlet-Gaussian process is a generalization of the Gaussian process that can be applied to source contributions and fractionation directly, which gives it superior estimation properties. Similarly to regular Gaussian process models, the correlation lengths must be specified, but different values are allowed for source contribution weights with the argument `rho` and for fractionation with the argument `rho.r`. Again, only a single chain is run with `chains=1` to reduce the execution time of this notebook, but at least `chains=4` is recommended.
 
 ```{r}
-system.time({ fit.dgp <- fit_dgp(model, meas, t = t, rho = 0.3, rho.r = 0.6, eta = eta, chains = 1) })
+system.time(
+  fit.dgp <- fit_dgp(model, meas, t = t, rho = 0.3, rho.r = 0.6, eta = eta, chains = 1)
+)
 ```
 
-The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot` the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
+The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot`, the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
 
 ```{r}
 autoplot(fit.dgp)
@@ -247,13 +258,15 @@ autoplot(fit.dgp)
 
 ## Hierarchical Dirichlet-Gaussian Process Model
 
-Setting fixed values of correlation lengths for the Dirichlet-Gaussian process model is not always useful, since it is generally not known in advance. Hierarchical estimation incorporates this uncertainty and does not treat correlation length values as fixed although rough estimates should still be specified with the `rho` and `rho.r` arguments respectively. Again, only a single chain is run with `chains=1` to reduce the execution time of this notebook, but at least `chains=4` is recommended.
+Setting fixed values of correlation lengths for the Dirichlet-Gaussian process model is not always useful, since they are generally not known in advance. Hierarchical estimation with `estim.rho=TRUE` incorporates this uncertainty and does not treat correlation length values as fixed, although rough estimates should still be specified with the `rho` and `rho.r` arguments respectively. Again, only a single chain is run with `chains=1` to reduce the execution time of this notebook, but at least `chains=4` is recommended.
 
 ```{r}
-system.time({ fit.hdgp <- fit_dgp(model, meas, t = t, rho = 0.3, rho.r = 0.6, eta = eta, estim.rho = TRUE, chains = 1) })
+system.time(
+  fit.hdgp <- fit_dgp(model, meas, t = t, rho = 0.3, rho.r = 0.6, eta = eta, estim.rho = TRUE, chains = 1)
+)
 ```
 
-The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot` the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
+The same extraction methods can be used with `coef` giving posterior means and `as.data.frame` a full data frame of estimates, standard deviations and quantiles. Using `autoplot`, the fitted values can be visually analyzed for the posterior mean and the 95\% equally-tailed credible interval.
 
 ```{r}
 autoplot(fit.hdgp)
