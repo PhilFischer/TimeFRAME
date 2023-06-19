@@ -19,6 +19,20 @@
 #' @details
 #' See [TimeFRAME::frame_model] for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 #'
+#' @examples
+#' # Define sources and fit the model
+#' model <- frame_model(n2o_sources, n2o_frac)
+#' fit <- fit_dgp(model, n2o_test[,-1], t = n2o_test$t, eta = 5)
+#' coef(fit)
+#'
+#' # Using only 2 sources and 2 isotopic measurements
+#' model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+#' fit2 <- fit_dgp(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5, chains = 1)
+#' coef(fit2)
+#'
+#' # Simultaneously estimate correlation lengths
+#' fit3 <- fit_dgp(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5, estim.rho = TRUE, chains = 1)
+#' coef(fit3)
 fit_dgp <- function(model, x, t, sd = data.frame(), eta = 0, rho = 0.3, rho.r = 0.6, estim.rho = FALSE, iter = 2000, cores = 1, chains = 4) {
   if(nrow(sd) == 0) sd <- matrix(0, nrow = nrow(x), ncol = ncol(x))
   else if(nrow(sd) != nrow(x) && ncol(sd) != ncol(x)) stop("Matrix of data and sd must have the same size, found ", dim(data), " and ", dim(sd))

@@ -41,3 +41,14 @@ Fit time series model using Gaussian process priors on measurements and otherwis
 \details{
 See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
 }
+\examples{
+# Define sources and fit the model
+model <- frame_model(n2o_sources, n2o_frac)
+fit <- fit_gp(model, n2o_test[,-1], t = n2o_test$t, eta = 5, chains = 1)
+coef(fit)
+
+# Using only 2 sources and 2 isotopic measurements
+model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+fit2 <- fit_gp(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5, chains = 1)
+coef(fit2)
+}

@@ -5,10 +5,15 @@
 Make sure R is updated and install TimeFRAME using the R console. On Windows [RTools](https://cran.r-project.org/bin/windows/Rtools/) will additionally be required.
 ```
 if (!require("devtools")) install.packages("devtools") 
-devtools::install_github("PhilFischer/TimeFRAME")
+devtools::install_github("PhilFischer/TimeFRAME", build_vignettes = TRUE)
 ```
 
 TimeFRAME uses Stan as sampling library in the background. If there are any issues regarding this, please refer to the [RStan Documentation](https://mc-stan.org/users/interfaces/rstan).
+
+If you do not need additional documentation of the package provided as vignettes you can omit building them for faster installation times.
+```
+devtools::install_github("PhilFischer/TimeFRAME", build_vignettes = FALSE)
+```
 
 ## Usage
 For viewing in-depth guides on the usage of this package please refer to the vignettes shipped with it.

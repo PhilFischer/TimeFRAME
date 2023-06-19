@@ -4,10 +4,14 @@
 \alias{as.data.frame.FrameFit}
 \title{Extract summary statistics of \code{FrameFit} object as data frame.}
 \usage{
-\method{as.data.frame}{FrameFit}(object, ...)
+\method{as.data.frame}{FrameFit}(x, row.names = NULL, optional = FALSE, ...)
 }
 \arguments{
-\item{object}{an object of type \code{FrameFit}.}
+\item{x}{an object of type \code{FrameFit}.}
+
+\item{row.names}{\code{NULL} or a character vector giving the row names for the data frame. Missing values are not allowed.}
+
+\item{optional}{logical. If \code{TRUE}, setting row names and converting column names (to syntactic names: see \code{make.names}) is optional. Note that all of \emph{R}'s \emph{base} package \code{as.data.frame()} methods use \code{optional} only for column names treatment, basically with the meaning of \verb{data.frame(*, check.names = !optional)}. See also the \code{make.names} argument of the \code{matrix} method.}
 
 \item{...}{other arguments.}
 }

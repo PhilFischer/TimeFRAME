@@ -1,6 +1,6 @@
 Package: TimeFRAME
 Title: Bayesian Data Analysis of Isotopic Measurement Time Series
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Philipp", "Fischer", , "fischphi@student.ethz.ch", role = c("aut", "cre"))
 Description: TimeFRAME is a data analysis package that can be used for Bayesian estimation of source contributions and fractionation of isotopic measurement time series. It uses Bayesian parameter estimation with Stan to estimate uncertainty and produce posterior samples. Additionally, the package provides utility functions to simulate measurements and isotopic signature data for the study of nitrous oxide.

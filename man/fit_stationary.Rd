@@ -9,7 +9,7 @@ fit_stationary(model, x, eta, iter = 2000)
 \arguments{
 \item{model}{an object of type \code{FrameModel}.}
 
-\item{x}{a data frame with \eqn{d} columns corresponding to isotopic measurements.}
+\item{x}{data frame with \eqn{d} columns corresponding to isotopic measurements.}
 
 \item{eta}{numeric or vector of length \eqn{d}, measurement noise magnitude overall or per isotopic measurement.}
 
@@ -20,4 +20,15 @@ Fits a Bayesian model for parameter estimation assuming the measurements are fro
 }
 \details{
 See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+}
+\examples{
+# Define sources and fit the model
+model <- frame_model(n2o_sources, n2o_frac)
+fit <- fit_stationary(model, n2o_test[,-1], 5)
+coef(fit)
+
+# Using only 2 sources and 2 isotopic measurements
+model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+fit2 <- fit_stationary(model2, n2o_test2[,-1], 5)
+coef(fit2)
 }

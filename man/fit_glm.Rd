@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_glm.R
 \name{fit_glm}
 \alias{fit_glm}
-\title{Fit generalized linear model model with spline bases}
+\title{Fit generalized linear model with spline bases}
 \usage{
 fit_glm(
   model,
@@ -43,4 +43,15 @@ Fit time series model using a generalzed linear model structure with time series
 }
 \details{
 See \link{frame_model} for description of model dimensions \eqn{d}, \eqn{K} and \eqn{L}.
+}
+\examples{
+# Define sources and fit the model
+model <- frame_model(n2o_sources, n2o_frac)
+fit <- fit_glm(model, n2o_test[,-1], t = n2o_test$t, eta = 5)
+coef(fit)
+
+# Using only 2 sources and 2 isotopic measurements
+model2 <- frame_model(n2o_sources[1:2,c(1:2,4:5)], n2o_frac[,c(1:2,4:5)])
+fit2 <- fit_glm(model2, n2o_test2[,-1], t = n2o_test2$t, eta = 5)
+coef(fit2)
 }

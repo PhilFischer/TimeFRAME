@@ -55,21 +55,22 @@ print.FrameModel <- function(x, ...) {
 #'
 #' @export
 #' @description Plot an object of type `FrameModel` using ggplot2. Dual isotope plots will be generated and if more than 2 measurement dimensions are present a list of plots will be returned.
-#' @param model an object of type FrameModel.
+#' @param object an object of type FrameModel.
 #' @param x data matrix of isotopic measurements (Default NULL).
-autoplot.FrameModel <- function(model, x = NULL, ...) {
-  comb <- combn(1:model$dims$K, 2)
+#' @param ... other arguments.
+autoplot.FrameModel <- function(object, x = NULL, ...) {
+  comb <- combn(1:object$dims$K, 2)
 
   p <- apply(comb, 2, function(index) {
-    names <- c(X = model$dimnames[index[1]], Y = model$dimnames[index[2]])
+    names <- c(X = object$dimnames[index[1]], Y = object$dimnames[index[2]])
     sources <- rbind(
-      cbind(type = "min", model$sources[,index] - model$sources[,model$dims$K + index] / 2) %>% tibble::rownames_to_column("name"),
-      cbind(type = "max", model$sources[,index] + model$sources[,model$dims$K + index] / 2) %>% tibble::rownames_to_column("name")
+      cbind(type = "min", object$sources[,index] - object$sources[,object$dims$K + index] / 2) %>% tibble::rownames_to_column("name"),
+      cbind(type = "max", object$sources[,index] + object$sources[,object$dims$K + index] / 2) %>% tibble::rownames_to_column("name")
     ) %>%
       dplyr::rename(all_of(names)) %>%
       tidyr::pivot_wider(id_cols = name, names_from = type, values_from = c(X, Y))
 
-    p <- model$sources[,index] %>%
+    p <- object$sources[,index] %>%
       as.data.frame() %>%
       tibble::rownames_to_column("name") %>%
       dplyr::rename(dplyr::all_of(names)) %>%

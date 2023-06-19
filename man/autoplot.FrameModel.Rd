@@ -4,12 +4,14 @@
 \alias{autoplot.FrameModel}
 \title{Plot \code{FrameModel} using ggplot2}
 \usage{
-\method{autoplot}{FrameModel}(model, x = NULL, ...)
+\method{autoplot}{FrameModel}(object, x = NULL, ...)
 }
 \arguments{
-\item{model}{an object of type FrameModel.}
+\item{object}{an object of type FrameModel.}
 
 \item{x}{data matrix of isotopic measurements (Default NULL).}
+
+\item{...}{other arguments.}
 }
 \description{
 Plot an object of type \code{FrameModel} using ggplot2. Dual isotope plots will be generated and if more than 2 measurement dimensions are present a list of plots will be returned.
